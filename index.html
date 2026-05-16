@@ -1,0 +1,3162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinova — AI-Powered Healthcare Intelligence Ecosystem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'space': ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        clinova: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            300: '#5eead4',
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                            950: '#042f2e',
+                        },
+                        emergency: {
+                            400: '#f87171',
+                            500: '#ef4444',
+                            600: '#dc2626',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background: #030712; color: #f9fafb; overflow-x: hidden; }
+
+        /* Hero Background */
+        .hero-bg {
+            position: relative;
+            background: linear-gradient(135deg, rgba(3,7,18,0.7) 0%, rgba(3,7,18,0.85) 40%, rgba(3,7,18,0.95) 100%),
+                        url('http://static.photos/medical/1200x630/42') center/cover no-repeat;
+        }
+
+        /* Animated Gradient Border */
+        .gradient-border {
+            position: relative;
+            background: rgba(17, 94, 89, 0.1);
+            border: 1px solid rgba(20, 184, 166, 0.15);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .gradient-border:hover {
+            border-color: rgba(20, 184, 166, 0.4);
+            background: rgba(17, 94, 89, 0.15);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -15px rgba(20, 184, 166, 0.15);
+        }
+
+        /* Pulse Animation for SOS */
+        @keyframes sos-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+            50% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
+        }
+        .sos-pulse { animation: sos-pulse 2s ease-in-out infinite; }
+
+        /* Heartbeat line */
+        @keyframes heartbeat-line {
+            0% { stroke-dashoffset: 1000; }
+            100% { stroke-dashoffset: 0; }
+        }
+        .heartbeat-animate {
+            stroke-dasharray: 1000;
+            animation: heartbeat-line 3s linear infinite;
+        }
+
+        /* Fade in up animation */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        /* Floating animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        .animate-float-delay { animation: float 6s ease-in-out 2s infinite; }
+        .animate-float-delay2 { animation: float 6s ease-in-out 4s infinite; }
+
+        /* Glow effect */
+        @keyframes glow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.7; }
+        }
+        .animate-glow { animation: glow 3s ease-in-out infinite; }
+
+        /* Grid pattern */
+        .grid-pattern {
+            background-image: 
+                linear-gradient(rgba(20, 184, 166, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(20, 184, 166, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0f1a; }
+        ::-webkit-scrollbar-thumb { background: #0d9488; border-radius: 3px; }
+
+        /* Glass morphism */
+        .glass {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(20, 184, 166, 0.1);
+        }
+
+        /* Role card hover icons */
+        .role-icon-wrap {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .gradient-border:hover .role-icon-wrap {
+            transform: scale(1.1);
+            background: rgba(20, 184, 166, 0.2);
+        }
+
+        /* Flow connector */
+        .flow-connector {
+            background: linear-gradient(90deg, rgba(20, 184, 166, 0.6), rgba(20, 184, 166, 0.1));
+            height: 2px;
+        }
+
+        /* Triage colors */
+        .triage-low { background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.3); color: #4ade80; }
+        .triage-moderate { background: rgba(234, 179, 8, 0.15); border: 1px solid rgba(234, 179, 8, 0.3); color: #facc15; }
+        .triage-high { background: rgba(249, 115, 22, 0.15); border: 1px solid rgba(249, 115, 22, 0.3); color: #fb923c; }
+        .triage-critical { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; }
+
+        /* Nav active styling */
+        .nav-link {
+            position: relative;
+            transition: color 0.3s;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #14b8a6, #2dd4bf);
+            transition: width 0.3s;
+        }
+        .nav-link:hover::after { width: 100%; }
+        .nav-link:hover { color: #2dd4bf; }
+
+        /* Stats counter */
+        @keyframes countUp {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Section reveal */
+        .reveal-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .reveal-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Mobile menu */
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(3, 7, 18, 0.95);
+            display: grid;
+            place-items: center;
+            padding: 1.5rem;
+            z-index: 60;
+        }
+        .modal-panel {
+            width: min(700px, 100%);
+            max-height: min(85vh, 760px);
+            overflow-y: auto;
+            background: rgba(6, 10, 25, 0.96);
+            border: 1px solid rgba(20, 184, 166, 0.14);
+            border-radius: 28px;
+            padding: 1.75rem;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+        }
+        .modal-close {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        /* Typing cursor */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .cursor-blink { animation: blink 1s infinite; }
+
+        /* Marquee */
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee { animation: marquee 30s linear infinite; }
+
+        /* Severity bar */
+        .severity-bar {
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="font-inter">
+
+    <!-- ============ NAVIGATION ============ -->
+    <nav id="navbar" class="fixed top-0 w-full z-50 transition-all duration-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 md:h-20">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-2 group">
+                    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-clinova-400 to-clinova-600 flex items-center justify-center">
+                        <i data-lucide="heart-pulse" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <span class="text-xl font-bold font-space tracking-tight group-hover:text-clinova-400 transition-colors">Clinova</span>
+                </a>
+
+                <!-- Desktop Nav -->
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#concept" class="nav-link text-sm text-gray-300">Concept</a>
+                    <a href="#systems" class="nav-link text-sm text-gray-300">Systems</a>
+                    <a href="#emergency" class="nav-link text-sm text-gray-300">Emergency</a>
+                    <a href="#intelligence" class="nav-link text-sm text-gray-300">Intelligence</a>
+                </div>
+
+                <!-- CTA -->
+                <div class="hidden md:flex items-center gap-3">
+                    <button id="desktopSignInBtn" class="px-4 py-2 text-sm text-gray-300 hover:text-white transition-colors">Sign In</button>
+                    <button id="adminBtn" class="px-4 py-2 text-sm text-gray-300 hover:text-white transition-colors hidden">Admin</button>
+                    <button id="desktopAccessBtn" class="px-5 py-2.5 text-sm font-semibold bg-gradient-to-r from-clinova-500 to-clinova-600 text-white rounded-lg hover:from-clinova-600 hover:to-clinova-700 transition-all shadow-lg shadow-clinova-500/20">
+                        Get Early Access
+                    </button>
+                </div>
+
+                <!-- Mobile menu button -->
+                <button id="mobileMenuBtn" class="md:hidden p-2 text-gray-300 hover:text-white">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenu" class="mobile-menu fixed inset-0 z-50 bg-gray-950/95 backdrop-blur-xl">
+        <div class="flex flex-col h-full p-6">
+            <div class="flex items-center justify-between mb-10">
+                <a href="#" class="flex items-center gap-2">
+                    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-clinova-400 to-clinova-600 flex items-center justify-center">
+                        <i data-lucide="heart-pulse" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <span class="text-xl font-bold font-space">Clinova</span>
+                </a>
+                <button id="closeMobileMenu" class="p-2 text-gray-400 hover:text-white">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="flex flex-col gap-6 text-lg">
+                <a href="#concept" class="mobile-link text-gray-300 hover:text-clinova-400 transition-colors">Concept</a>
+                <a href="#systems" class="mobile-link text-gray-300 hover:text-clinova-400 transition-colors">Systems</a>
+                <a href="#emergency" class="mobile-link text-gray-300 hover:text-clinova-400 transition-colors">Emergency</a>
+                <a href="#intelligence" class="mobile-link text-gray-300 hover:text-clinova-400 transition-colors">Intelligence</a>
+            </div>
+            <div class="mt-auto space-y-3">
+                <button id="mobileSignInBtn" class="w-full px-5 py-3 text-sm font-semibold text-gray-300 border border-gray-700 rounded-lg hover:border-clinova-500 transition-colors">Sign In</button>
+                <button id="mobileAccessBtn" class="w-full px-5 py-3 text-sm font-semibold bg-gradient-to-r from-clinova-500 to-clinova-600 text-white rounded-lg">Get Early Access</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ HERO SECTION ============ -->
+    <section class="hero-bg min-h-screen relative flex items-center overflow-hidden grid-pattern">
+        <!-- Background gradient orbs -->
+        <div class="absolute top-1/4 -left-32 w-96 h-96 bg-clinova-500/10 rounded-full blur-3xl animate-glow"></div>
+        <div class="absolute bottom-1/4 -right-32 w-96 h-96 bg-clinova-600/8 rounded-full blur-3xl animate-glow" style="animation-delay: 1.5s"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-clinova-500/5 rounded-full blur-3xl"></div>
+
+        <!-- Heartbeat SVG overlay -->
+        <svg class="absolute bottom-20 left-0 w-full h-20 opacity-20" viewBox="0 0 1200 60" preserveAspectRatio="none">
+            <path class="heartbeat-animate" d="M0,30 L100,30 L110,30 L120,10 L130,50 L140,5 L150,55 L160,20 L170,40 L180,30 L300,30 L310,30 L320,10 L330,50 L340,5 L350,55 L360,20 L370,40 L380,30 L500,30 L510,30 L520,10 L530,50 L540,5 L550,55 L560,20 L570,40 L580,30 L700,30 L710,30 L720,10 L730,50 L740,5 L750,55 L760,20 L770,40 L780,30 L900,30 L910,30 L920,10 L930,50 L940,5 L950,55 L960,20 L970,40 L980,30 L1200,30" fill="none" stroke="#14b8a6" stroke-width="2"/>
+        </svg>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 relative z-10 w-full">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <!-- Left content -->
+                <div class="space-y-8">
+                    <div class="animate-fade-in-up" style="animation-delay: 0.2s">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-clinova-500/10 border border-clinova-500/20 mb-6">
+                            <span class="w-2 h-2 rounded-full bg-clinova-400 animate-pulse"></span>
+                            <span class="text-xs font-medium text-clinova-300 tracking-wider uppercase">AI-Powered Healthcare Ecosystem</span>
+                        </div>
+                    </div>
+
+                    <h1 class="animate-fade-in-up" style="animation-delay: 0.4s">
+                        <span class="block text-5xl sm:text-6xl lg:text-7xl font-black font-space leading-none tracking-tighter">
+                            <span class="bg-clip-text text-transparent bg-gradient-to-r from-white via-clinova-200 to-clinova-400">CLINOVA</span>
+                        </span>
+                        <span class="block text-xl sm:text-2xl lg:text-3xl font-semibold text-gray-300 mt-4 leading-snug">
+                            Healthcare Intelligence
+                        </span>
+                        <span class="block text-lg sm:text-xl text-gray-400 font-light mt-2 leading-relaxed">
+                            Nervous System
+                        </span>
+                    </h1>
+
+                    <p class="animate-fade-in-up text-gray-400 text-base sm:text-lg max-w-xl leading-relaxed" style="animation-delay: 0.6s">
+                        A unified healthcare intelligence system connecting <span class="text-clinova-400 font-medium">patients</span>, <span class="text-blue-400 font-medium">doctors</span>, <span class="text-purple-400 font-medium">hospitals</span>, and <span class="text-red-400 font-medium">emergency services</span> into one coordinated AI-driven network.
+                    </p>
+
+                    <div class="animate-fade-in-up flex flex-wrap gap-4" style="animation-delay: 0.8s">
+                        <button id="launchDashboardBtn" class="group px-8 py-4 bg-gradient-to-r from-clinova-500 to-clinova-600 text-white font-semibold rounded-xl hover:from-clinova-600 hover:to-clinova-700 transition-all shadow-xl shadow-clinova-500/25 flex items-center gap-2">
+                            <span>Launch Dashboard</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                        <button class="px-8 py-4 border border-gray-700 text-gray-300 font-semibold rounded-xl hover:border-clinova-500 hover:text-clinova-400 transition-all flex items-center gap-2">
+                            <i data-lucide="play-circle" class="w-5 h-5"></i>
+                            <span>Watch Demo</span>
+                        </button>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="animate-fade-in-up grid grid-cols-3 gap-6 pt-6 border-t border-gray-800" style="animation-delay: 1s">
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-bold font-space text-white" id="stat1">99.7<span class="text-clinova-400">%</span></div>
+                            <div class="text-xs text-gray-500 mt-1">Uptime</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-bold font-space text-white" id="stat2">2.4<span class="text-clinova-400">s</span></div>
+                            <div class="text-xs text-gray-500 mt-1">Avg Response</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-bold font-space text-white" id="stat3">10K<span class="text-clinova-400">+</span></div>
+                            <div class="text-xs text-gray-500 mt-1">Lives Assisted</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right visual - Emergency Dashboard Preview -->
+                <div class="animate-fade-in-up hidden lg:block" style="animation-delay: 0.6s">
+                    <div class="relative">
+                        <!-- Floating elements -->
+                        <div class="absolute -top-6 -right-6 animate-float z-20">
+                            <div class="glass rounded-2xl p-4 shadow-2xl">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center sos-pulse">
+                                        <i data-lucide="alert-triangle" class="w-5 h-5 text-red-400"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs font-semibold text-red-400">CRITICAL ALERT</div>
+                                        <div class="text-xs text-gray-400">Emergency dispatched</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="absolute -bottom-4 -left-6 animate-float-delay z-20">
+                            <div class="glass rounded-2xl p-4 shadow-2xl">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
+                                        <i data-lucide="check-circle" class="w-5 h-5 text-green-400"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs font-semibold text-green-400">MATCHED</div>
+                                        <div class="text-xs text-gray-400">City General Hospital</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Main preview card -->
+                        <div class="glass rounded-3xl p-6 shadow-2xl border border-gray-800/50">
+                            <div class="flex items-center justify-between mb-5">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                </div>
+                                <span class="text-xs text-gray-500 font-mono">clinova://emergency/dashboard</span>
+                            </div>
+
+                            <!-- Mini dashboard -->
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-semibold text-white">Live Emergency Feed</span>
+                                    <span class="px-2 py-1 rounded text-xs bg-red-500/15 text-red-400 font-medium flex items-center gap-1">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse"></span>
+                                        LIVE
+                                    </span>
+                                </div>
+
+                                <!-- Patient case -->
+                                <div class="bg-gray-900/60 rounded-xl p-4 border border-gray-700/30">
+                                    <div class="flex items-start justify-between mb-3">
+                                        <div>
+                                            <div class="text-sm font-semibold text-white">Patient #4821</div>
+                                            <div class="text-xs text-gray-500 mt-0.5">Chest pain, shortness of breath</div>
+                                        </div>
+                                        <span class="triage-critical px-2 py-0.5 rounded text-xs font-semibold">CRITICAL</span>
+                                    </div>
+                                    <div class="w-full bg-gray-800 rounded-full h-1.5 mb-3">
+                                        <div class="bg-gradient-to-r from-red-500 to-red-400 h-1.5 rounded-full severity-bar" style="width: 92%"></div>
+                                    </div>
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="text-gray-500">AI Confidence</span>
+                                        <span class="text-red-400 font-semibold">92%</span>
+                                    </div>
+                                </div>
+
+                                <!-- Hospital match -->
+                                <div class="bg-gray-900/60 rounded-xl p-4 border border-gray-700/30">
+                                    <div class="flex items-start justify-between mb-3">
+                                        <div>
+                                            <div class="text-sm font-semibold text-white">Hospital Match</div>
+                                            <div class="text-xs text-gray-500 mt-0.5">City General — Cardiology Center</div>
+                                        </div>
+                                        <span class="triage-low px-2 py-0.5 rounded text-xs font-semibold">MATCHED</span>
+                                    </div>
+                                    <div class="flex items-center gap-4 text-xs">
+                                        <div class="flex items-center gap-1.5 text-gray-400">
+                                            <i data-lucide="bed-double" class="w-3.5 h-3.5"></i>
+                                            <span>12 beds available</span>
+                                        </div>
+                                        <div class="flex items-center gap-1.5 text-gray-400">
+                                            <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+                                            <span>ETA 4 min</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- AI Suggestion -->
+                                <div class="bg-clinova-500/5 rounded-xl p-4 border border-clinova-500/10">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <i data-lucide="sparkles" class="w-4 h-4 text-clinova-400"></i>
+                                        <span class="text-xs font-semibold text-clinova-400">AI RECOMMENDATION</span>
+                                    </div>
+                                    <p class="text-xs text-gray-400 leading-relaxed">Activate cardiac protocol. Mobilize cardiology team. Prepare catheterization lab.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scrolling trust bar -->
+            <div class="mt-16 animate-fade-in-up" style="animation-delay: 1.2s">
+                <div class="flex items-center gap-8 overflow-hidden">
+                    <span class="text-xs text-gray-600 uppercase tracking-widest whitespace-nowrap">Trusted by</span>
+                    <div class="overflow-hidden flex-1 relative">
+                        <div class="flex items-center gap-12 animate-marquee">
+                            <span class="text-gray-600 font-semibold text-sm whitespace-nowrap">National Health Services</span>
+                            <span class="text-gray-700">•</span>
+                            <span class="text-gray-600 font-semibold text-sm whitespace-nowrap">Metro General Hospital</span>
+                            <span class="text-gray-700">•</span>
+                            <span class="text-gray-600 font-semibold text-sm whitespace-nowrap">City Cardiology Center</span>
+                            <span class="text-gray-700">•</span>
+                            <span class="text-gray-600 font-semibold text-sm whitespace-nowrap">Regional Emergency Authority</span>
+                            <span class="text-gray-700">•</span>
+                            <span class="text-gray-600 font-semibold text-sm whitespace-nowrap">University Medical Center</span>
+                            <span class="text-gray-700">•</span>
+                            <span class="text-gray-600 font-semibold text-sm whitespace-nowrap">National Health Services</span>
+                            <span class="text-gray-700">•</span>
+                            <span class="text-gray-600 font-semibold text-sm whitespace-nowrap">Metro General Hospital</span>
+                            <span class="text-gray-700">•</span>
+                            <span class="text-gray-600 font-semibold text-sm whitespace-nowrap">City Cardiology Center</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+            <i data-lucide="chevrons-down" class="w-6 h-6 text-clinova-500/50"></i>
+        </div>
+    </section>
+
+    <!-- ============ CORE CONCEPT ============ -->
+    <section id="concept" class="relative py-24 md:py-32 overflow-hidden">
+        <div class="absolute inset-0 grid-pattern"></div>
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-clinova-500/5 rounded-full blur-3xl"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="reveal-section text-center mb-16">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-clinova-500/10 border border-clinova-500/20 mb-6">
+                    <i data-lucide="network" class="w-4 h-4 text-clinova-400"></i>
+                    <span class="text-xs font-medium text-clinova-300 tracking-wider uppercase">Core Concept</span>
+                </div>
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold font-space">
+                    A National Healthcare
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-clinova-400 to-clinova-200"> Nervous System</span>
+                </h2>
+                <p class="text-gray-400 mt-6 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
+                    Clinova operates as a real-time healthcare intelligence network. Every participant — from patient to paramedic — connects through a unified layer powered by AI.
+                </p>
+            </div>
+
+            <!-- 4 Roles -->
+            <div class="reveal-section grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Patient -->
+                <div id="rolePatient" class="gradient-border rounded-2xl p-6 group cursor-pointer">
+                    <div class="role-icon-wrap w-14 h-14 rounded-xl bg-clinova-500/10 flex items-center justify-center mb-5">
+                        <i data-lucide="user" class="w-7 h-7 text-clinova-400"></i>
+                    </div>
+                    <h3 class="text-lg font-bold font-space text-white mb-2">Patients</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-4">Empower patients with streamlined health profiles, self-service insights, and fast emergency support.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" class="role-feature-btn px-2 py-1 rounded text-xs bg-clinova-500/10 text-clinova-300 border border-clinova-500/20 hover:bg-clinova-500/20 transition" data-action="Symptom Checker">Symptom Checker</button>
+                        <button type="button" class="role-feature-btn px-2 py-1 rounded text-xs bg-clinova-500/10 text-clinova-300 border border-clinova-500/20 hover:bg-clinova-500/20 transition" data-action="SOS Mode">SOS Mode</button>
+                        <button type="button" class="role-feature-btn px-2 py-1 rounded text-xs bg-clinova-500/10 text-clinova-300 border border-clinova-500/20 hover:bg-clinova-500/20 transition" data-action="Health Insights">Health Insights</button>
+                        <button type="button" class="role-feature-btn px-2 py-1 rounded text-xs bg-clinova-500/10 text-clinova-300 border border-clinova-500/20 hover:bg-clinova-500/20 transition" data-action="Hospital Finder">Search Nearby Hospitals</button>
+                        <button type="button" class="role-feature-btn px-2 py-1 rounded text-xs bg-clinova-500/10 text-clinova-300 border border-clinova-500/20 hover:bg-clinova-500/20 transition" data-action="Get Admitted">Get Admitted</button>
+                    </div>
+                </div>
+
+                <!-- Doctor -->
+                <div id="roleDoctor" class="gradient-border rounded-2xl p-6 group cursor-pointer">
+                    <div class="role-icon-wrap w-14 h-14 rounded-xl bg-blue-500/10 flex items-center justify-center mb-5">
+                        <i data-lucide="stethoscope" class="w-7 h-7 text-blue-400"></i>
+                    </div>
+                    <h3 class="text-lg font-bold font-space text-white mb-2">Doctors</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-4">AI-enhanced decision support for diagnosis, case management, and treatment planning.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" class="role-feature-btn px-2 py-1 rounded text-xs bg-blue-500/10 text-blue-300 border border-blue-500/20 hover:bg-blue-500/20 transition" data-action="AI Assistant">AI Assistant</button>
+                        <button type="button" class="role-feature-btn px-2 py-1 rounded text-xs bg-blue-500/10 text-blue-300 border border-blue-500/20 hover:bg-blue-500/20 transition" data-action="Case Queue">Case Queue</button>
+                        <button type="button" class="role-feature-btn px-2 py-1 rounded text-xs bg-blue-500/10 text-blue-300 border border-blue-500/20 hover:bg-blue-500/20 transition" data-action="Triage Alerts">Triage Alerts</button>
+                    </div>
+                </div>
+
+                <!-- Hospital -->
+                <div id="roleHospital" class="gradient-border rounded-2xl p-6 group cursor-pointer">
+                    <div class="role-icon-wrap w-14 h-14 rounded-xl bg-purple-500/10 flex items-center justify-center mb-5">
+                        <i data-lucide="building-2" class="w-7 h-7 text-purple-400"></i>
+                    </div>
+                    <h3 class="text-lg font-bold font-space text-white mb-2">Hospitals</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-4">Manage capacity, emergency coordination, and smart admission powered by real-time data.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" class="role-feature-btn px-2 py-1 rounded text-xs bg-purple-500/10 text-purple-300 border border-purple-500/20 hover:bg-purple-500/20 transition" data-action="Capacity Panel">Capacity Panel</button>
+                        <button type="button" class="role-feature-btn px-2 py-1 rounded text-xs bg-purple-500/10 text-purple-300 border border-purple-500/20 hover:bg-purple-500/20 transition" data-action="Smart Admission">Smart Admission</button>
+                        <button type="button" class="role-feature-btn px-2 py-1 rounded text-xs bg-purple-500/10 text-purple-300 border border-purple-500/20 hover:bg-purple-500/20 transition" data-action="Emergency Feed">Emergency Feed</button>
+                        <button type="button" class="role-feature-btn px-2 py-1 rounded text-xs bg-purple-500/10 text-purple-300 border border-purple-500/20 hover:bg-purple-500/20 transition" data-action="Patient Records">Patient Records</button>
+                    </div>
+                </div>
+
+                <!-- Emergency -->
+                <div id="roleEmergency" class="gradient-border rounded-2xl p-6 group cursor-pointer">
+                    <div class="role-icon-wrap w-14 h-14 rounded-xl bg-red-500/10 flex items-center justify-center mb-5">
+                        <i data-lucide="siren" class="w-7 h-7 text-red-400"></i>
+                    </div>
+                    <h3 class="text-lg font-bold font-space text-white mb-2">Emergency</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-4">AI-driven coordination layer for triage, hospital matching, and real-time routing.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" class="role-feature-btn px-2 py-1 rounded text-xs bg-red-500/10 text-red-300 border border-red-500/20 hover:bg-red-500/20 transition" data-action="AI Triage">AI Triage</button>
+                        <button type="button" class="role-feature-btn px-2 py-1 rounded text-xs bg-red-500/10 text-red-300 border border-red-500/20 hover:bg-red-500/20 transition" data-action="Hospital Match">Hospital Match</button>
+                        <button type="button" class="role-feature-btn px-2 py-1 rounded text-xs bg-red-500/10 text-red-300 border border-red-500/20 hover:bg-red-500/20 transition" data-action="Routing">Routing</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="roleActionMessage" class="hidden mt-8 rounded-2xl border border-gray-800 bg-gray-950/80 p-4 text-sm text-gray-300"></div>
+        </div>
+    </section>
+
+    <!-- ============ FOUR SYSTEMS ============ -->
+    <section id="systems" class="relative py-24 md:py-32">
+        <div class="absolute inset-0 bg-gradient-to-b from-gray-950 via-gray-900/50 to-gray-950"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="reveal-section text-center mb-20">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-clinova-500/10 border border-clinova-500/20 mb-6">
+                    <i data-lucide="layers" class="w-4 h-4 text-clinova-400"></i>
+                    <span class="text-xs font-medium text-clinova-300 tracking-wider uppercase">Four Systems</span>
+                </div>
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold font-space">
+                    Purpose-Built
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-clinova-400 to-clinova-200"> Dashboards</span>
+                </h2>
+                <p class="text-gray-400 mt-6 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
+                    Each role in the Clinova ecosystem has a dedicated interface designed for its specific workflow and decision-making needs.
+                </p>
+            </div>
+
+            <!-- System 1: Patient -->
+            <div id="systemPatient" class="reveal-section grid lg:grid-cols-2 gap-8 items-center mb-24">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-clinova-500/10 border border-clinova-500/20 mb-5">
+                        <i data-lucide="user" class="w-3.5 h-3.5 text-clinova-400"></i>
+                        <span class="text-xs font-medium text-clinova-300">Patient System</span>
+                    </div>
+                    <h3 class="text-2xl md:text-3xl font-bold font-space mb-4">Your Health, <span class="text-clinova-400">Amplified</span></h3>
+                    <p class="text-gray-400 leading-relaxed mb-6">Manage your complete health profile, report symptoms in natural language, and trigger emergencies with a single tap. AI interprets your symptoms and guides next actions.</p>
+
+                    <div class="space-y-4">
+                        <div id="healthProfileCard" class="flex items-start gap-3 cursor-pointer group hover:bg-gray-800/50 rounded-2xl transition p-4" role="button">
+                            <div class="w-8 h-8 rounded-lg bg-clinova-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <i data-lucide="file-text" class="w-4 h-4 text-clinova-400"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-semibold text-white">Health Profile</div>
+                                <div class="text-xs text-gray-500 mt-0.5">Medical history, allergies, conditions, emergency contacts</div>
+                            </div>
+                            <div class="ml-auto text-xs text-clinova-400 font-semibold self-center">Download PDF</div>
+                        </div>
+                    </div>
+
+                    <div id="patientFeaturePanel" class="hidden mt-8 rounded-3xl border border-clinova-500/20 bg-gray-950/90 p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h4 id="patientFeatureTitle" class="text-xl font-bold text-white">Patient Admission</h4>
+                                <p id="patientFeatureSubtitle" class="text-sm text-gray-400">Search hospitals, request admission and generate a QR code for reception.</p>
+                            </div>
+                            <button id="closePatientFeature" class="text-xs text-gray-400 hover:text-white">Close</button>
+                        </div>
+                        <div id="patientFeatureContent" class="space-y-4 text-sm text-gray-300"></div>
+                    </div>
+                </div>
+
+                <!-- Patient dashboard mock -->
+                <div class="glass rounded-2xl overflow-hidden">
+                    <img src="http://static.photos/healthcare/640x360/5" alt="Patient Dashboard" class="w-full h-48 object-cover opacity-40">
+                    <div class="p-5 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold text-gray-200">Patient Dashboard</span>
+                            <span class="text-xs text-gray-500">3 incoming alerts</span>
+                        </div>
+                        <div class="bg-gray-900/60 rounded-xl p-4 border border-gray-700/30">
+                            <div class="text-xs text-gray-500 mb-2">How are you feeling?</div>
+                            <div class="text-sm text-gray-300 bg-gray-800/50 rounded-lg p-3 border border-gray-700/30 flex items-center">
+                                <span>"I've been having chest pain and feeling dizzy"</span>
+                                <span class="cursor-blink text-clinova-400 ml-1">|</span>
+                            </div>
+                        </div>
+                        <div class="bg-red-500/5 rounded-xl p-3 border border-red-500/10 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="zap" class="w-4 h-4 text-red-400"></i>
+                                <span class="text-xs font-semibold text-red-400">Emergency SOS</span>
+                            </div>
+                            <div class="w-10 h-10 rounded-full bg-red-500 sos-pulse flex items-center justify-center cursor-pointer hover:bg-red-600 transition-colors">
+                                <i data-lucide="phone" class="w-4 h-4 text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System 2: Doctor -->
+            <div id="systemDoctor" class="reveal-section grid lg:grid-cols-2 gap-8 items-center mb-24">
+                <!-- Doctor dashboard mock -->
+                <div class="glass rounded-2xl overflow-hidden order-2 lg:order-1">
+                    <img src="http://static.photos/medical/640x360/12" alt="Doctor Dashboard" class="w-full h-48 object-cover opacity-40">
+                    <div class="p-5 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold text-gray-200">Doctor Dashboard</span>
+                            <span class="text-xs text-gray-500">3 incoming cases</span>
+                        </div>
+                        <!-- Case cards -->
+                        <div class="bg-gray-900/60 rounded-xl p-3 border border-red-500/20">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs font-semibold text-white">Case #4821</span>
+                                <span class="triage-critical px-2 py-0.5 rounded text-xs font-semibold">CRITICAL</span>
+                            </div>
+                            <div class="text-xs text-gray-400 mb-2">Chest pain, shortness of breath</div>
+                            <div class="flex items-center gap-2">
+                                <div class="px-2 py-0.5 rounded text-xs bg-blue-500/10 text-blue-300 border border-blue-500/20">Cardiology</div>
+                                <div class="px-2 py-0.5 rounded text-xs bg-gray-500/10 text-gray-400 border border-gray-500/20">AI: 94% match</div>
+                            </div>
+                        </div>
+                        <div class="bg-clinova-500/5 rounded-xl p-3 border border-clinova-500/10">
+                            <div class="flex items-center gap-1.5 mb-1.5">
+                                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-clinova-400"></i>
+                                <span class="text-xs font-semibold text-clinova-400">AI Suggestion</span>
+                            </div>
+                            <div class="text-xs text-gray-400">Probable Acute Coronary Syndrome. Recommend ECG, Troponin panel.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="order-1 lg:order-2">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 mb-5">
+                        <i data-lucide="stethoscope" class="w-3.5 h-3.5 text-blue-400"></i>
+                        <span class="text-xs font-medium text-blue-300">Doctor System</span>
+                    </div>
+                    <h3 class="text-2xl md:text-3xl font-bold font-space mb-4">AI-Enhanced <span class="text-blue-400">Decision Support</span></h3>
+                    <p class="text-gray-400 leading-relaxed mb-6">Receive AI-generated diagnosis suggestions, drug interaction warnings, and summarized patient history. AI assists — never replaces — your clinical judgment.</p>
+
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <i data-lucide="inbox" class="w-4 h-4 text-blue-400"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-semibold text-white">Incoming Cases Queue</div>
+                                <div class="text-xs text-gray-500 mt-0.5">Patient cases with triage levels, symptoms, and AI risk analysis</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <i data-lucide="sparkles" class="w-4 h-4 text-blue-400"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-semibold text-white">AI Medical Assistant</div>
+                                <div class="text-xs text-gray-500 mt-0.5">Probable diagnoses, recommended tests, drug interaction alerts</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <i data-lucide="clipboard-check" class="w-4 h-4 text-blue-400"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-semibold text-white">Case Management</div>
+                                <div class="text-xs text-gray-500 mt-0.5">Accept cases, assign treatment plans, forward to specialists</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System 3: Hospital -->
+            <div id="systemHospital" class="reveal-section grid lg:grid-cols-2 gap-8 items-center mb-24">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 mb-5">
+                        <i data-lucide="building-2" class="w-3.5 h-3.5 text-purple-400"></i>
+                        <span class="text-xs font-medium text-purple-300">Hospital System</span>
+                    </div>
+                    <h3 class="text-2xl md:text-3xl font-bold font-space mb-4">Capacity & <span class="text-purple-400">Coordination</span></h3>
+                    <p class="text-gray-400 leading-relaxed mb-6">Real-time hospital status panels, emergency feeds, and smart admission powered by AI-driven resource allocation and proximity matching.</p>
+
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <i data-lucide="monitor" class="w-4 h-4 text-purple-400"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-semibold text-white">Hospital Status Panel</div>
+                                <div class="text-xs text-gray-500 mt-0.5">Available beds, ICU availability, department capacity</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <i data-lucide="radio" class="w-4 h-4 text-purple-400"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-semibold text-white">Emergency Feed</div>
+                                <div class="text-xs text-gray-500 mt-0.5">Incoming patients with predicted conditions and ETA</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <i data-lucide="brain" class="w-4 h-4 text-purple-400"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-semibold text-white">Smart Admission</div>
+                                <div class="text-xs text-gray-500 mt-0.5">AI assigns patients by severity, capacity, proximity, and specialization</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hospital dashboard mock -->
+                <div class="glass rounded-2xl overflow-hidden">
+                    <img src="http://static.photos/office/640x360/30" alt="Hospital Dashboard" class="w-full h-48 object-cover opacity-40">
+                    <div class="p-5 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold text-gray-200">Hospital Dashboard</span>
+                            <span class="text-xs text-green-400 flex items-center gap-1"><span class="w-1.5 h-1.5 bg-green-400 rounded-full"></span> Operational</span>
+                        </div>
+                        <!-- Capacity grid -->
+                        <div class="grid grid-cols-3 gap-2">
+                            <div class="bg-gray-900/60 rounded-lg p-3 border border-gray-700/30 text-center">
+                                <div class="text-lg font-bold font-space text-purple-400">42</div>
+                                <div class="text-xs text-gray-500 mt-1">Beds Free</div>
+                            </div>
+                            <div class="bg-gray-900/60 rounded-lg p-3 border border-gray-700/30 text-center">
+                                <div class="text-lg font-bold font-space text-yellow-400">6</div>
+                                <div class="text-xs text-gray-500 mt-1">ICU Free</div>
+                            </div>
+                            <div class="bg-gray-900/60 rounded-lg p-3 border border-gray-700/30 text-center">
+                                <div class="text-lg font-bold font-space text-red-400">3</div>
+                                <div class="text-xs text-gray-500 mt-1">ER Queue</div>
+                            </div>
+                        </div>
+                        <div class="bg-purple-500/5 rounded-xl p-3 border border-purple-500/10">
+                            <div class="text-xs font-semibold text-purple-400 mb-1">Incoming Emergency</div>
+                            <div class="text-xs text-gray-400">Cardiac patient — ETA 4 min — Prepping cath lab</div>
+                            <div class="w-full bg-gray-800 rounded-full h-1.5 mt-2">
+                                <div class="bg-gradient-to-r from-purple-500 to-purple-400 h-1.5 rounded-full severity-bar" style="width: 67%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="hospitalFeaturePanel" class="hidden mt-8 rounded-3xl border border-purple-500/20 bg-gray-950/90 p-6">
+                    <div class="flex items-center justify-between mb-4 gap-4">
+                        <div>
+                            <h4 id="hospitalFeatureTitle" class="text-xl font-bold text-white">Hospital Feature Panel</h4>
+                            <p id="hospitalFeatureSubtitle" class="text-sm text-gray-400">Select a hospital feature to view its real-time status.</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span id="hospitalFeatureStatus" class="text-xs text-purple-300">Ready</span>
+                            <button id="closeHospitalFeature" class="text-xs text-gray-400 hover:text-white">Close</button>
+                        </div>
+                    </div>
+                    <div id="hospitalFeatureContent" class="space-y-4 text-sm text-gray-300"></div>
+                </div>
+            </div>
+
+            <!-- System 4: Emergency Intelligence -->
+            <div id="systemEmergency" class="reveal-section grid lg:grid-cols-2 gap-8 items-center">
+                <!-- Emergency dashboard mock -->
+                <div class="glass rounded-2xl overflow-hidden order-2 lg:order-1 relative">
+                    <img src="http://static.photos/technology/640x360/88" alt="Emergency Intelligence" class="w-full h-48 object-cover opacity-30">
+                    <div class="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-red-900/20 to-transparent"></div>
+                    <div class="p-5 space-y-3 relative z-10">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold text-gray-200 flex items-center gap-2">
+                                <i data-lucide="siren" class="w-3.5 h-3.5 text-red-400"></i>
+                                Emergency Intelligence Engine
+                            </span>
+                            <span class="px-2 py-0.5 rounded text-xs bg-red-500/15 text-red-400 font-medium flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse"></span> ACTIVE
+                            </span>
+                        </div>
+                        <!-- Step indicators -->
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-3 bg-green-500/5 rounded-lg p-2.5 border border-green-500/10">
+                                <div class="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center text-xs font-bold text-green-400">1</div>
+                                <span class="text-xs text-green-300">Emergency Detected</span>
+                                <i data-lucide="check" class="w-3.5 h-3.5 text-green-400 ml-auto"></i>
+                            </div>
+                            <div class="flex items-center gap-3 bg-yellow-500/5 rounded-lg p-2.5 border border-yellow-500/10">
+                                <div class="w-6 h-6 rounded-full bg-yellow-500/20 flex items-center justify-center text-xs font-bold text-yellow-400">2</div>
+                                <span class="text-xs text-yellow-300">AI Triage: CRITICAL</span>
+                                <i data-lucide="check" class="w-3.5 h-3.5 text-yellow-400 ml-auto"></i>
+                            </div>
+                            <div class="flex items-center gap-3 bg-purple-500/5 rounded-lg p-2.5 border border-purple-500/10">
+                                <div class="w-6 h-6 rounded-full bg-purple-500/20 flex items-center justify-center text-xs font-bold text-purple-400">3</div>
+                                <span class="text-xs text-purple-300">Hospital Matched</span>
+                                <i data-lucide="check" class="w-3.5 h-3.5 text-purple-400 ml-auto"></i>
+                            </div>
+                            <div class="flex items-center gap-3 bg-clinova-500/5 rounded-lg p-2.5 border border-clinova-500/10">
+                                <div class="w-6 h-6 rounded-full bg-clinova-500/20 flex items-center justify-center text-xs font-bold text-clinova-400">4</div>
+                                <span class="text-xs text-clinova-300">Dispatching Ambulance</span>
+                                <div class="ml-auto w-3.5 h-3.5 border-2 border-clinova-400 border-t-transparent rounded-full animate-spin"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="order-1 lg:order-2">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 mb-5">
+                        <i data-lucide="siren" class="w-3.5 h-3.5 text-red-400"></i>
+                        <span class="text-xs font-medium text-red-300">Emergency Intelligence</span>
+                    </div>
+                    <h3 class="text-2xl md:text-3xl font-bold font-space mb-4">The Core <span class="text-red-400">Engine</span></h3>
+                    <p class="text-gray-400 leading-relaxed mb-6">The central intelligence layer of Clinova. It coordinates all emergency healthcare activity in real time — from detection to pre-arrival hospital preparation.</p>
+
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <i data-lucide="scan-search" class="w-4 h-4 text-red-400"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-semibold text-white">Emergency Detection</div>
+                                <div class="text-xs text-gray-500 mt-0.5">SOS triggers, critical symptom flags, wearable input monitoring</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <i data-lucide="gauge" class="w-4 h-4 text-red-400"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-semibold text-white">AI Triage Engine</div>
+                                <div class="text-xs text-gray-500 mt-0.5">Evaluates symptoms → LOW / MODERATE / HIGH / CRITICAL</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <i data-lucide="map-pin" class="w-4 h-4 text-red-400"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-semibold text-white">Hospital Matching & Routing</div>
+                                <div class="text-xs text-gray-500 mt-0.5">Best hospital by distance, beds, ICU, specialization match</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <i data-lucide="file-check" class="w-4 h-4 text-red-400"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-semibold text-white">Pre-Arrival Intelligence</div>
+                                <div class="text-xs text-gray-500 mt-0.5">Hospital receives predicted condition, severity, and prep steps before arrival</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ EMERGENCY FLOW ============ -->
+    <section id="emergency" class="relative py-24 md:py-32 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-gray-950 via-red-950/10 to-gray-950"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-red-500/5 rounded-full blur-3xl"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="reveal-section text-center mb-16">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/10 border border-red-500/20 mb-6">
+                    <i data-lucide="zap" class="w-4 h-4 text-red-400"></i>
+                    <span class="text-xs font-medium text-red-300 tracking-wider uppercase">Emergency First Architecture</span>
+                </div>
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold font-space">
+                    1-Click
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-red-500"> Emergency Response</span>
+                </h2>
+                <p class="text-gray-400 mt-6 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
+                    Minimal user friction. Maximum system response. When every second counts, Clinova automatically orchestrates the entire emergency workflow.
+                </p>
+            </div>
+
+            <!-- SOS Demo -->
+            <div class="reveal-section max-w-4xl mx-auto mb-20">
+                <div class="glass rounded-3xl p-8 md:p-12 relative overflow-hidden">
+                    <div class="absolute inset-0 grid-pattern opacity-30"></div>
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-red-500/10 rounded-full blur-3xl"></div>
+
+                    <div class="relative z-10 text-center">
+                        <div class="w-24 h-24 mx-auto rounded-full bg-red-500 sos-pulse flex items-center justify-center mb-8 cursor-pointer hover:bg-red-600 transition-colors" id="sosBtn">
+                            <i data-lucide="phone-call" class="w-10 h-10 text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold font-space mb-2">Emergency SOS</h3>
+                        <p class="text-gray-400 text-sm mb-8 max-w-md mx-auto">Tap once to activate the full emergency intelligence pipeline</p>
+
+                        <div id="sosOutput" class="hidden space-y-3 text-left max-w-lg mx-auto mt-8">
+                            <div class="bg-gray-900/60 rounded-xl p-4 border border-red-500/20 flex items-center gap-3 sos-step" data-delay="0">
+                                <div class="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center flex-shrink-0">
+                                    <i data-lucide="scan-search" class="w-4 h-4 text-red-400"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-semibold text-red-400">Step 1 — Emergency Detected</div>
+                                    <div class="text-xs text-gray-500">Classifying severity from symptoms and indicators</div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-900/60 rounded-xl p-4 border border-yellow-500/20 flex items-center gap-3 sos-step" data-delay="300">
+                                <div class="w-8 h-8 rounded-lg bg-yellow-500/20 flex items-center justify-center flex-shrink-0">
+                                    <i data-lucide="gauge" class="w-4 h-4 text-yellow-400"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-semibold text-yellow-400">Step 2 — AI Triage: CRITICAL</div>
+                                    <div class="text-xs text-gray-500">Severity escalated. Activating emergency protocols.</div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-900/60 rounded-xl p-4 border border-purple-500/20 flex items-center gap-3 sos-step" data-delay="600">
+                                <div class="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center flex-shrink-0">
+                                    <i data-lucide="building-2" class="w-4 h-4 text-purple-400"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-semibold text-purple-400">Step 3 — Hospital Matched</div>
+                                    <div class="text-xs text-gray-500">City General — Cardiology Center (12 beds, ICU ready)</div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-900/60 rounded-xl p-4 border border-clinova-500/20 flex items-center gap-3 sos-step" data-delay="900">
+                                <div class="w-8 h-8 rounded-lg bg-clinova-500/20 flex items-center justify-center flex-shrink-0">
+                                    <i data-lucide="navigation" class="w-4 h-4 text-clinova-400"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-semibold text-clinova-400">Step 4 — Ambulance Dispatched</div>
+                                    <div class="text-xs text-gray-500">ETA 4 minutes. Live routing active.</div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-900/60 rounded-xl p-4 border border-blue-500/20 flex items-center gap-3 sos-step" data-delay="1200">
+                                <div class="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                                    <i data-lucide="file-check" class="w-4 h-4 text-blue-400"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-semibold text-blue-400">Step 5 — Pre-Arrival Report Sent</div>
+                                    <div class="text-xs text-gray-500">Predicted: Acute Coronary Syndrome. Cardiac team prepping.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Triage Levels -->
+            <div class="reveal-section">
+                <h3 class="text-xl font-bold font-space text-center mb-8">AI Triage Severity Levels</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="text-center p-6 rounded-2xl bg-gradient-to-b from-green-500/5 to-transparent border border-green-500/10">
+                        <div class="w-12 h-12 mx-auto rounded-full bg-green-500/10 flex items-center justify-center mb-3">
+                            <i data-lucide="shield-check" class="w-6 h-6 text-green-400"></i>
+                        </div>
+                        <span class="triage-low px-3 py-1 rounded-full text-xs font-bold inline-block mb-2">LOW</span>
+                        <p class="text-xs text-gray-500 mt-2">Routine care. Self-monitoring recommended.</p>
+                    </div>
+                    <div class="text-center p-6 rounded-2xl bg-gradient-to-b from-yellow-500/5 to-transparent border border-yellow-500/10">
+                        <div class="w-12 h-12 mx-auto rounded-full bg-yellow-500/10 flex items-center justify-center mb-3">
+                            <i data-lucide="alert-circle" class="w-6 h-6 text-yellow-400"></i>
+                        </div>
+                        <span class="triage-moderate px-3 py-1 rounded-full text-xs font-bold inline-block mb-2">MODERATE</span>
+                        <p class="text-xs text-gray-500 mt-2">Schedule appointment. Non-urgent monitoring.</p>
+                    </div>
+                    <div class="text-center p-6 rounded-2xl bg-gradient-to-b from-orange-500/5 to-transparent border border-orange-500/10">
+                        <div class="w-12 h-12 mx-auto rounded-full bg-orange-500/10 flex items-center justify-center mb-3">
+                            <i data-lucide="alert-triangle" class="w-6 h-6 text-orange-400"></i>
+                        </div>
+                        <span class="triage-high px-3 py-1 rounded-full text-xs font-bold inline-block mb-2">HIGH</span>
+                        <p class="text-xs text-gray-500 mt-2">Urgent evaluation. Prioritize in queue.</p>
+                    </div>
+                    <div class="text-center p-6 rounded-2xl bg-gradient-to-b from-red-500/5 to-transparent border border-red-500/10">
+                        <div class="w-12 h-12 mx-auto rounded-full bg-red-500/10 flex items-center justify-center mb-3">
+                            <i data-lucide="siren" class="w-6 h-6 text-red-400"></i>
+                        </div>
+                        <span class="triage-critical px-3 py-1 rounded-full text-xs font-bold inline-block mb-2">CRITICAL</span>
+                        <p class="text-xs text-gray-500 mt-2">Immediate response. Emergency protocols activated.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ CTA SECTION ============ -->
+    <section class="relative py-24 md:py-32 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-t from-clinova-950/50 to-gray-950"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="reveal-section text-center max-w-3xl mx-auto">
+                <div class="glass rounded-3xl p-10 md:p-16 relative overflow-hidden">
+                    <div class="absolute inset-0 grid-pattern opacity-30"></div>
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-clinova-500/10 rounded-full blur-3xl"></div>
+                    <div class="absolute bottom-0 left-0 w-64 h-64 bg-red-500/10 rounded-full blur-3xl"></div>
+
+                    <div class="relative z-10">
+                        <h2 class="text-3xl md:text-4xl font-bold font-space mb-4">
+                            Ready to Transform Healthcare?
+                        </h2>
+                        <p class="text-gray-400 mb-8 text-base md:text-lg">Join the next evolution in healthcare intelligence. Early access is now available for healthcare professionals and institutions.</p>
+                        
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                            <button class="px-8 py-4 bg-gradient-to-r from-clinova-500 to-clinova-600 text-white font-semibold rounded-xl hover:from-clinova-600 hover:to-clinova-700 transition-all shadow-xl shadow-clinova-500/25 flex items-center justify-center gap-2">
+                                <i data-lucide="sparkles" class="w-5 h-5"></i>
+                                <span>Get Early Access</span>
+                            </button>
+                            <button class="px-8 py-4 border border-gray-600 text-gray-300 font-semibold rounded-xl hover:border-clinova-500 hover:text-clinova-400 transition-all flex items-center justify-center gap-2">
+                                <i data-lucide="mail" class="w-5 h-5"></i>
+                                <span>Contact Us</span>
+                            </button>
+                        </div>
+
+                        <div class="mt-8 flex items-center justify-center gap-6 text-xs text-gray-500">
+                            <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-3.5 h-3.5"></i> HIPAA Compliant</span>
+                            <span class="flex items-center gap-1.5"><i data-lucide="lock" class="w-3.5 h-3.5"></i> End-to-End Encrypted</span>
+                            <span class="flex items-center gap-1.5"><i data-lucide="globe" class="w-3.5 h-3.5"></i> Works Offline</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="relative border-t border-gray-800/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="grid md:grid-cols-4 gap-10">
+                <div class="md:col-span-1">
+                    <a href="#" class="flex items-center gap-2 mb-4">
+                        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-clinova-400 to-clinova-600 flex items-center justify-center">
+                            <i data-lucide="heart-pulse" class="w-5 h-5 text-white"></i>
+                        </div>
+                        <span class="text-xl font-bold font-space tracking-tight">Clinova</span>
+                    </a>
+                    <p class="text-gray-500 text-sm leading-relaxed">A unified healthcare intelligence ecosystem powered by AI. Connecting patients, doctors, hospitals, and emergency services.</p>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-gray-200 mb-4">Systems</h4>
+                    <ul class="space-y-2.5">
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-clinova-400 transition-colors">Patient Dashboard</a></li>
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-clinova-400 transition-colors">Doctor Dashboard</a></li>
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-clinova-400 transition-colors">Hospital Dashboard</a></li>
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-clinova-400 transition-colors">Emergency Engine</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-gray-200 mb-4">Resources</h4>
+                    <ul class="space-y-2.5">
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-clinova-400 transition-colors">Documentation</a></li>
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-clinova-400 transition-colors">API Reference</a></li>
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-clinova-400 transition-colors">Case Studies</a></li>
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-clinova-400 transition-colors">Blog</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-gray-200 mb-4">Company</h4>
+                    <ul class="space-y-2.5">
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-clinova-400 transition-colors">About</a></li>
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-clinova-400 transition-colors">Careers</a></li>
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-clinova-400 transition-colors">Privacy</a></li>
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-clinova-400 transition-colors">Terms</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-12 pt-8 border-t border-gray-800/50 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-xs text-gray-600">© 2025 Clinova Healthcare Intelligence. All rights reserved.</p>
+                <div class="flex items-center gap-4">
+                    <a href="#" class="w-9 h-9 rounded-lg bg-gray-800/50 flex items-center justify-center text-gray-500 hover:text-clinova-400 hover:bg-gray-800 transition-all">
+                        <i data-lucide="twitter" class="w-4 h-4"></i>
+                    </a>
+                    <a href="#" class="w-9 h-9 rounded-lg bg-gray-800/50 flex items-center justify-center text-gray-500 hover:text-clinova-400 hover:bg-gray-800 transition-all">
+                        <i data-lucide="linkedin" class="w-4 h-4"></i>
+                    </a>
+                    <a href="#" class="w-9 h-9 rounded-lg bg-gray-800/50 flex items-center justify-center text-gray-500 hover:text-clinova-400 hover:bg-gray-800 transition-all">
+                        <i data-lucide="github" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div id="loginModalOverlay" class="hidden modal-overlay">
+        <div class="modal-panel">
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-white">Clinova Secure Login</h2>
+                    <p class="text-sm text-gray-400 mt-2">Doctor and Hospital dashboard access requires verified credentials. Enter the details below to continue.</p>
+                </div>
+                <button id="closeLoginModal" class="modal-close rounded-full p-3 text-gray-300 hover:bg-white/10">Close</button>
+            </div>
+            <div class="grid gap-4 mt-8">
+                <label class="block text-sm text-gray-300">
+                    Role
+                    <select id="loginRole" class="mt-2 w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-4 py-3 text-white outline-none focus:border-clinova-400">
+                        <option value="Patient">Patient</option>
+                        <option value="Doctor">Doctor</option>
+                        <option value="Hospital">Hospital</option>
+                    </select>
+                </label>
+                <label class="block text-sm text-gray-300">
+                    Email
+                    <input id="loginEmail" type="email" placeholder="name@organization.com" class="mt-2 w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-4 py-3 text-white outline-none focus:border-clinova-400" />
+                </label>
+                <label class="block text-sm text-gray-300">
+                    Password
+                    <input id="loginPassword" type="password" placeholder="Secure password" class="mt-2 w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-4 py-3 text-white outline-none focus:border-clinova-400" />
+                </label>
+                <label id="loginExtraLabel" class="block text-sm text-gray-300 hidden">
+                    Extra details
+                    <input id="loginExtra" type="text" placeholder="MD-4821 or HOSP-7702" class="mt-2 w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-4 py-3 text-white outline-none focus:border-clinova-400" />
+                </label>
+                <label id="loginKeyLabel" class="block text-sm text-gray-300 hidden">
+                    Access Key
+                    <input id="loginKey" type="text" placeholder="DR-ACCESS-82 or HOSP-KEY-56" class="mt-2 w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-4 py-3 text-white outline-none focus:border-clinova-400" />
+                </label>
+                <div class="flex flex-col sm:flex-row gap-4 mt-4">
+                    <button id="loginSubmit" class="w-full sm:w-auto px-6 py-4 rounded-2xl bg-gradient-to-r from-clinova-500 to-clinova-600 text-white font-semibold">Submit</button>
+                    <button id="loginAbort" class="w-full sm:w-auto px-6 py-4 rounded-2xl border border-gray-700 text-gray-300">Cancel</button>
+                </div>
+                <div id="loginError" class="hidden text-sm text-red-300"></div>
+                <div id="loginHint" class="text-sm text-gray-400">Patient access only requires email and password.</div>
+                <div id="loginSuccess" class="hidden text-sm text-emerald-400"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="profileEditorOverlay" class="hidden modal-overlay">
+        <div class="modal-panel">
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-white">Doctor Patient Profile Editor</h2>
+                    <p class="text-sm text-gray-400 mt-2">Doctors can update a patient's health record and save it to the patient's account.</p>
+                </div>
+                <button id="closeProfileEditor" class="modal-close rounded-full p-3 text-gray-300 hover:bg-white/10">Close</button>
+            </div>
+            <form id="profileEditorForm" class="grid gap-4 mt-8">
+                <label class="block text-sm text-gray-300">
+                    Patient Email
+                    <input id="editPatientEmail" type="email" placeholder="patient@example.com" class="mt-2 w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-4 py-3 text-white outline-none focus:border-clinova-400" />
+                </label>
+                <label class="block text-sm text-gray-300">
+                    Full Name
+                    <input id="editPatientName" type="text" placeholder="Jane Doe" class="mt-2 w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-4 py-3 text-white outline-none focus:border-clinova-400" />
+                </label>
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <label class="block text-sm text-gray-300">
+                        Date of Birth
+                        <input id="editPatientDob" type="text" placeholder="1985-05-12" class="mt-2 w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-4 py-3 text-white outline-none focus:border-clinova-400" />
+                    </label>
+                    <label class="block text-sm text-gray-300">
+                        Emergency Contacts
+                        <input id="editPatientContacts" type="text" placeholder="Mom: 555-123-987" class="mt-2 w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-4 py-3 text-white outline-none focus:border-clinova-400" />
+                    </label>
+                </div>
+                <label class="block text-sm text-gray-300">
+                    Allergies
+                    <input id="editPatientAllergies" type="text" placeholder="Peanuts, penicillin" class="mt-2 w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-4 py-3 text-white outline-none focus:border-clinova-400" />
+                </label>
+                <label class="block text-sm text-gray-300">
+                    Conditions
+                    <input id="editPatientConditions" type="text" placeholder="Asthma, hypertension" class="mt-2 w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-4 py-3 text-white outline-none focus:border-clinova-400" />
+                </label>
+                <label class="block text-sm text-gray-300">
+                    Doctor Notes
+                    <textarea id="editPatientNotes" rows="4" placeholder="Enter treatment guidance, follow-up reminders, or account notes." class="mt-2 w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-4 py-3 text-white outline-none focus:border-clinova-400"></textarea>
+                </label>
+                <div class="flex flex-col sm:flex-row gap-4 mt-4">
+                    <button id="editPatientSave" class="w-full sm:w-auto px-6 py-4 rounded-2xl bg-gradient-to-r from-clinova-500 to-clinova-600 text-white font-semibold">Save Profile</button>
+                    <button id="editPatientLoad" type="button" class="w-full sm:w-auto px-6 py-4 rounded-2xl border border-gray-700 text-gray-300">Load Profile</button>
+                </div>
+                <div id="editProfileMessage" class="hidden text-sm text-emerald-400"></div>
+            </form>
+        </div>
+    </div>
+
+    <div id="adminModalOverlay" class="hidden modal-overlay">
+        <div class="modal-panel">
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-white">Admin Panel</h2>
+                    <p class="text-sm text-gray-400 mt-2">Add and manage hospitals, doctors, and monitor registered users.</p>
+                </div>
+                <button id="closeAdminModal" class="modal-close rounded-full p-3 text-gray-300 hover:bg-white/10">Close</button>
+            </div>
+            <div class="grid gap-4 mt-6">
+                <div class="grid gap-2 md:grid-cols-2">
+                    <div class="p-4 rounded-2xl border border-gray-800 bg-gray-950/80">
+                        <div class="text-sm text-gray-400 mb-2">Add Hospital</div>
+                        <input id="adminHospitalName" placeholder="Hospital name" class="w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-3 py-2 text-white mb-2" />
+                        <input id="adminHospitalEmail" placeholder="Hospital user email" class="w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-3 py-2 text-white mb-2" />
+                        <input id="adminHospitalKey" placeholder="Access key" class="w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-3 py-2 text-white mb-2" />
+                        <div class="grid grid-cols-2 gap-2">
+                            <input id="adminHospitalLat" placeholder="Latitude" class="rounded-2xl border border-gray-700 bg-gray-950/80 px-3 py-2 text-white" />
+                            <input id="adminHospitalLng" placeholder="Longitude" class="rounded-2xl border border-gray-700 bg-gray-950/80 px-3 py-2 text-white" />
+                        </div>
+                        <input id="adminHospitalAddress" placeholder="Address" class="w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-3 py-2 text-white mt-2" />
+                        <button id="addHospitalBtn" class="mt-3 rounded-2xl bg-gradient-to-r from-clinova-500 to-purple-500 px-4 py-2 text-white text-sm">Add Hospital</button>
+                    </div>
+                    <div class="p-4 rounded-2xl border border-gray-800 bg-gray-950/80">
+                        <div class="text-sm text-gray-400 mb-2">Add Doctor</div>
+                        <input id="adminDoctorName" placeholder="Full name" class="w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-3 py-2 text-white mb-2" />
+                        <input id="adminDoctorEmail" placeholder="Doctor email" class="w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-3 py-2 text-white mb-2" />
+                        <input id="adminDoctorLicense" placeholder="License number" class="w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-3 py-2 text-white mb-2" />
+                        <input id="adminDoctorKey" placeholder="Access key" class="w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-3 py-2 text-white mb-2" />
+                        <button id="addDoctorBtn" class="mt-3 rounded-2xl bg-gradient-to-r from-clinova-500 to-purple-500 px-4 py-2 text-white text-sm">Add Doctor</button>
+                    </div>
+                </div>
+
+                <div class="grid gap-3 md:grid-cols-3">
+                    <div class="p-4 rounded-2xl border border-gray-800 bg-gray-950/80">
+                        <div class="text-sm text-gray-400 mb-2">Registered Hospitals</div>
+                        <div id="registeredHospitalsList" class="text-sm text-gray-300 max-h-40 overflow-auto"></div>
+                    </div>
+                    <div class="p-4 rounded-2xl border border-gray-800 bg-gray-950/80">
+                        <div class="text-sm text-gray-400 mb-2">Registered Doctors</div>
+                        <div id="registeredDoctorsList" class="text-sm text-gray-300 max-h-40 overflow-auto"></div>
+                    </div>
+                    <div class="p-4 rounded-2xl border border-gray-800 bg-gray-950/80">
+                        <div class="text-sm text-gray-400 mb-2">Registered Users</div>
+                        <div id="registeredUsersList" class="text-sm text-gray-300 max-h-40 overflow-auto"></div>
+                    </div>
+                </div>
+                <div class="mt-4 p-4 rounded-2xl border border-gray-800 bg-gray-950/80">
+                    <div class="text-sm text-gray-400 mb-2">Doctor License Requests</div>
+                    <div id="licenseRequestsList" class="text-sm text-gray-300 max-h-40 overflow-auto"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ SCRIPTS ============ -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-gray-950/90', 'backdrop-blur-xl', 'border-b', 'border-gray-800/50', 'shadow-lg');
+            } else {
+                navbar.classList.remove('bg-gray-950/90', 'backdrop-blur-xl', 'border-b', 'border-gray-800/50', 'shadow-lg');
+            }
+        });
+
+        // Mobile menu
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const closeMobileMenu = document.getElementById('closeMobileMenu');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.add('open');
+        });
+
+        closeMobileMenu.addEventListener('click', () => {
+            mobileMenu.classList.remove('open');
+        });
+
+        // Close mobile menu on link click
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('open');
+            });
+        });
+
+        // Login modal wiring
+        const desktopSignInBtn = document.getElementById('desktopSignInBtn');
+        const desktopAccessBtn = document.getElementById('desktopAccessBtn');
+        const mobileSignInBtn = document.getElementById('mobileSignInBtn');
+        const mobileAccessBtn = document.getElementById('mobileAccessBtn');
+        const loginModalOverlay = document.getElementById('loginModalOverlay');
+        const closeLoginModal = document.getElementById('closeLoginModal');
+        const loginAbort = document.getElementById('loginAbort');
+        const loginSubmit = document.getElementById('loginSubmit');
+        const loginRole = document.getElementById('loginRole');
+        const loginEmail = document.getElementById('loginEmail');
+        const loginPassword = document.getElementById('loginPassword');
+        const loginExtra = document.getElementById('loginExtra');
+        const loginExtraLabel = document.getElementById('loginExtraLabel');
+        const loginKey = document.getElementById('loginKey');
+        const loginKeyLabel = document.getElementById('loginKeyLabel');
+        const loginError = document.getElementById('loginError');
+        const loginHint = document.getElementById('loginHint');
+        const loginSuccess = document.getElementById('loginSuccess');
+        const roleActionMessage = document.getElementById('roleActionMessage');
+        const launchDashboardBtn = document.getElementById('launchDashboardBtn');
+        const patientDashboard = document.getElementById('systemPatient');
+        const doctorDashboard = document.getElementById('systemDoctor');
+        const hospitalDashboard = document.getElementById('systemHospital');
+        const emergencyDashboard = document.getElementById('systemEmergency');
+        const emergencyFlowSection = document.getElementById('emergency');
+        const emergencyNavLinks = document.querySelectorAll('a[href="#emergency"]');
+
+        const showLoginSuccess = (message) => {
+            loginError.classList.add('hidden');
+            loginError.textContent = '';
+            loginSuccess.textContent = message;
+            loginSuccess.classList.remove('hidden');
+            loginHint.classList.add('hidden');
+            setTimeout(closeLogin, 1800);
+        };
+
+        const authMap = {
+            Patient: {
+                requiredFields: ['email', 'password'],
+                validate: ({ email, password }) => email.includes('@') && password.length >= 8,
+                token: 'PATIENT-ACCESS'
+            },
+            Doctor: {
+                requiredFields: ['email', 'password', 'extra', 'key'],
+                validate: ({ email, password, extra, key }) =>
+                    email.toLowerCase() === 'doctor@clinova.ai' &&
+                    password === 'DocSecure123!' &&
+                    extra === 'MD-4821' &&
+                    key === 'DR-ACCESS-82',
+                token: 'DOCTOR-ACCESS'
+            },
+            Hospital: {
+                requiredFields: ['email', 'password', 'extra', 'key'],
+                validate: ({ email, password, extra, key }) => {
+                    const isKnownHospital =
+                        email.toLowerCase() === 'hospital@citymed.ai' &&
+                        password === 'HospSecure123!' &&
+                        extra === 'HOSP-7702' &&
+                        key === 'HOSP-KEY-56';
+
+                    const isFlexibleHospital =
+                        email.includes('@') &&
+                        password.length >= 8 &&
+                        /^HOSP-/i.test(extra) &&
+                        /^HOSP/i.test(key);
+
+                    return isKnownHospital || isFlexibleHospital;
+                },
+                token: 'HOSPITAL-ACCESS'
+            }
+        };
+
+        const updateLoginFields = () => {
+            const role = loginRole.value;
+            const showExtras = role === 'Doctor' || role === 'Hospital';
+            loginExtraLabel.classList.toggle('hidden', !showExtras);
+            loginKeyLabel.classList.toggle('hidden', !showExtras);
+            loginError.classList.add('hidden');
+            loginError.textContent = '';
+            if (role === 'Doctor') {
+                loginHint.textContent = 'Doctor login requires email, password, medical license ID, and secure access key.';
+                loginExtra.placeholder = 'MD-4821';
+                loginKey.placeholder = 'DR-ACCESS-82';
+            } else if (role === 'Hospital') {
+                loginHint.textContent = 'Hospital login requires email, password, facility code, and access key.';
+                loginExtra.placeholder = 'HOSP-210';
+                loginKey.placeholder = 'HOSPKAY';
+            } else {
+                loginHint.textContent = 'Patient access only requires a valid email and an 8+ character password.';
+            }
+        };
+
+        const openLoginModal = (defaultRole = 'Patient') => {
+            loginRole.value = defaultRole;
+            loginEmail.value = '';
+            loginPassword.value = '';
+            loginExtra.value = '';
+            loginKey.value = '';
+            loginError.classList.add('hidden');
+            loginError.textContent = '';
+            loginSuccess.classList.add('hidden');
+            loginSuccess.textContent = '';
+            loginHint.classList.remove('hidden');
+            loginModalOverlay.classList.remove('hidden');
+            updateLoginFields();
+        };
+
+        const closeLogin = () => {
+            loginModalOverlay.classList.add('hidden');
+            loginError.classList.add('hidden');
+            loginSuccess.classList.add('hidden');
+        };
+
+        const saveAuth = (role, email, token) => {
+            localStorage.setItem('clinovaAuthRole', role);
+            localStorage.setItem('clinovaAuthUser', email);
+            localStorage.setItem('clinovaAuthToken', token);
+        };
+
+        const patientProfileCard = document.getElementById('healthProfileCard');
+        const profileEditorOverlay = document.getElementById('profileEditorOverlay');
+        const closeProfileEditor = document.getElementById('closeProfileEditor');
+        const editPatientEmail = document.getElementById('editPatientEmail');
+        const editPatientName = document.getElementById('editPatientName');
+        const editPatientDob = document.getElementById('editPatientDob');
+        const editPatientAllergies = document.getElementById('editPatientAllergies');
+        const editPatientConditions = document.getElementById('editPatientConditions');
+        const editPatientContacts = document.getElementById('editPatientContacts');
+        const editPatientNotes = document.getElementById('editPatientNotes');
+        const loadPatientProfile = document.getElementById('editPatientLoad');
+        const savePatientProfileButton = document.getElementById('editPatientSave');
+        const editProfileMessage = document.getElementById('editProfileMessage');
+
+        const getPatientProfiles = () => JSON.parse(localStorage.getItem('clinovaPatientProfiles') || '{}');
+        const savePatientProfiles = (profiles) => localStorage.setItem('clinovaPatientProfiles', JSON.stringify(profiles));
+
+        const defaultPatientProfile = (email) => ({
+            fullName: 'Patient Name',
+            email,
+            dob: '1990-01-01',
+            allergies: 'None recorded',
+            conditions: 'No long-term conditions noted',
+            emergencyContacts: 'Primary: 911; Family: +254 700 000 000, +254 711 111 111',
+            doctorNotes: 'This health profile is managed by Clinova doctors.',
+            latitude: null,
+            longitude: null,
+            locationAddress: 'Not provided'
+        });
+
+        const getStoredPatientProfile = (email) => {
+            const profiles = getPatientProfiles();
+            if (!profiles[email]) {
+                profiles[email] = defaultPatientProfile(email);
+                savePatientProfiles(profiles);
+            }
+            return profiles[email];
+        };
+
+        const showProfileEditorMessage = (message, success = true) => {
+            if (!editProfileMessage) return;
+            editProfileMessage.textContent = message;
+            editProfileMessage.classList.toggle('text-emerald-400', success);
+            editProfileMessage.classList.toggle('text-red-400', !success);
+            editProfileMessage.classList.remove('hidden');
+            clearTimeout(window.profileEditorMessageTimer);
+            window.profileEditorMessageTimer = setTimeout(() => {
+                editProfileMessage.classList.add('hidden');
+            }, 4000);
+        };
+
+        const downloadPatientProfilePDF = (email) => {
+            if (!email) return;
+            const profile = getStoredPatientProfile(email);
+            const jsPDF = window.jspdf?.jsPDF;
+            if (!jsPDF) {
+                showRoleActionMessage('PDF download is unavailable. Please ensure the built-in viewer script is loaded.', false);
+                return;
+            }
+
+            const doc = new jsPDF();
+            doc.setFontSize(18);
+            doc.text('Clinova Health Profile', 15, 20);
+            doc.setFontSize(12);
+            doc.text(`Name: ${profile.fullName}`, 15, 35);
+            doc.text(`Email: ${profile.email}`, 15, 43);
+            doc.text(`Date of Birth: ${profile.dob}`, 15, 51);
+            doc.text('Allergies:', 15, 66);
+            doc.text(profile.allergies, 20, 74, { maxWidth: 170 });
+            doc.text('Medical Conditions:', 15, 94);
+            doc.text(profile.conditions, 20, 102, { maxWidth: 170 });
+            doc.text('Emergency Contacts:', 15, 122);
+            doc.text(profile.emergencyContacts, 20, 130, { maxWidth: 170 });
+            doc.text('Doctor Notes:', 15, 150);
+            doc.text(profile.doctorNotes, 20, 158, { maxWidth: 170 });
+            doc.save(`${profile.fullName.replace(/\s+/g, '_') || 'patient'}-Health-Profile.pdf`);
+            showRoleActionMessage('Health Profile downloaded successfully.', true);
+        };
+
+        const openProfileEditorForEmail = (email) => {
+            if (!profileEditorOverlay || !editPatientEmail) return;
+            const userEmail = email || editPatientEmail.value.trim();
+            if (!userEmail) {
+                showRoleActionMessage('Enter a patient email to open their profile editor.', false);
+                return;
+            }
+            const profile = getStoredPatientProfile(userEmail);
+            editPatientEmail.value = profile.email;
+            editPatientName.value = profile.fullName;
+            editPatientDob.value = profile.dob;
+            editPatientAllergies.value = profile.allergies;
+            editPatientConditions.value = profile.conditions;
+            editPatientContacts.value = profile.emergencyContacts;
+            editPatientNotes.value = profile.doctorNotes;
+            showProfileEditorMessage(`Loaded profile for ${profile.email}`, true);
+            profileEditorOverlay.classList.remove('hidden');
+        };
+
+        const savePatientProfileFromEditor = () => {
+            const email = editPatientEmail.value.trim();
+            if (!email) {
+                showProfileEditorMessage('Patient email is required to save the profile.', false);
+                return;
+            }
+            const profiles = getPatientProfiles();
+            profiles[email] = {
+                fullName: editPatientName.value.trim() || 'Patient Name',
+                email,
+                dob: editPatientDob.value.trim() || '1990-01-01',
+                allergies: editPatientAllergies.value.trim() || 'None recorded',
+                conditions: editPatientConditions.value.trim() || 'No long-term conditions noted',
+                emergencyContacts: editPatientContacts.value.trim() || 'Primary: 911',
+                doctorNotes: editPatientNotes.value.trim() || 'This health profile is managed by Clinova doctors.'
+            };
+            savePatientProfiles(profiles);
+            showProfileEditorMessage(`Saved profile for ${email}`, true);
+        };
+
+        const getCurrentRole = () => localStorage.getItem('clinovaAuthRole');
+
+        const showRoleActionMessage = (message, success = false) => {
+            if (!roleActionMessage) return;
+            roleActionMessage.textContent = message;
+            roleActionMessage.classList.toggle('text-emerald-400', success);
+            roleActionMessage.classList.toggle('text-red-400', !success);
+            roleActionMessage.classList.remove('hidden');
+            clearTimeout(window.roleActionMessageTimer);
+            window.roleActionMessageTimer = setTimeout(() => {
+                roleActionMessage.classList.add('hidden');
+            }, 4000);
+        };
+
+        const permittedActions = {
+            Patient: ['Symptom Checker', 'SOS Mode', 'Health Insights', 'Hospital Finder', 'Get Admitted'],
+            Doctor: ['AI Assistant', 'Case Queue', 'Triage Alerts'],
+            Hospital: ['Capacity Panel', 'Smart Admission', 'Emergency Feed', 'Patient Records'],
+            Emergency: ['AI Triage', 'Hospital Match', 'Routing']
+        };
+
+        const patientFeaturePanel = document.getElementById('patientFeaturePanel');
+        const patientFeatureTitle = document.getElementById('patientFeatureTitle');
+        const patientFeatureSubtitle = document.getElementById('patientFeatureSubtitle');
+        const patientFeatureContent = document.getElementById('patientFeatureContent');
+        const closePatientFeature = document.getElementById('closePatientFeature');
+
+        const hospitalIdentityMap = {
+            'westside@hospital.com': 'Westside General Hospital',
+            'city@hospital.com': 'City Central Hospital',
+            'north@hospital.com': 'Northside Medical Center',
+            'kericho@hospital.com': 'Kericho Town Emergency Hospital'
+        };
+
+        const hospitalLocations = {
+            'Kericho Town Emergency Hospital': { lat: -0.3929, lng: 35.2801, address: 'Kericho Town, Kenya' },
+            'Westside General Hospital': { lat: -0.4000, lng: 35.2800, address: 'Westside District' },
+            'City Central Hospital': { lat: -0.3940, lng: 35.2750, address: 'Central Park Area' },
+            'Northside Medical Center': { lat: -0.3880, lng: 35.2850, address: 'North Heights' }
+        };
+
+        const mockPatientLocation = {
+            lat: -0.453200,
+            lng: 35.307800,
+            address: 'Kabiang, Kericho County, Kenya'
+        };
+
+        const getSignedInHospitalName = () => {
+            const email = localStorage.getItem('clinovaAuthUser');
+            return hospitalIdentityMap[email] || 'Clinova Hospital';
+        };
+
+        const generateGoogleEarthLink = (latitude, longitude) => {
+            return `https://earth.google.com/web/search/${latitude},${longitude}`;
+        };
+
+        const getHospitalCoordinates = (hospitalName) => {
+            return hospitalLocations[hospitalName] || { lat: -0.3931, lng: 35.2795, address: 'Kericho Town' };
+        };
+
+        const getAdmissionRequests = () => JSON.parse(localStorage.getItem('clinovaAdmissionRequests') || '[]');
+        const saveAdmissionRequests = (requests) => localStorage.setItem('clinovaAdmissionRequests', JSON.stringify(requests));
+        const getAdmittedPatients = () => JSON.parse(localStorage.getItem('clinovaAdmittedPatients') || '[]');
+        const saveAdmittedPatients = (patients) => localStorage.setItem('clinovaAdmittedPatients', JSON.stringify(patients));
+        const getSelectedHospital = () => localStorage.getItem('clinovaSelectedHospital') || '';
+        const saveSelectedHospital = (hospital) => localStorage.setItem('clinovaSelectedHospital', hospital);
+
+        // Registered hospitals & doctors storage (admin managed)
+        const getRegisteredHospitals = () => JSON.parse(localStorage.getItem('clinovaRegisteredHospitals') || '[]');
+        const saveRegisteredHospitals = (hospitals) => localStorage.setItem('clinovaRegisteredHospitals', JSON.stringify(hospitals));
+        const addRegisteredHospital = (hospital) => {
+            const list = getRegisteredHospitals();
+            list.push(hospital);
+            saveRegisteredHospitals(list);
+            // keep hospitalLocations for legacy lookups
+            hospitalLocations[hospital.name] = { lat: parseFloat(hospital.lat) || -0.3931, lng: parseFloat(hospital.lng) || 35.2795, address: hospital.address || hospital.city || 'Unknown' };
+            return hospital;
+        };
+
+        const getRegisteredDoctors = () => JSON.parse(localStorage.getItem('clinovaRegisteredDoctors') || '[]');
+        const saveRegisteredDoctors = (doctors) => localStorage.setItem('clinovaRegisteredDoctors', JSON.stringify(doctors));
+        const addRegisteredDoctor = (doctor) => {
+            const list = getRegisteredDoctors();
+            list.push(doctor);
+            saveRegisteredDoctors(list);
+            return doctor;
+        };
+
+        // License requests storage
+        const getLicenseRequests = () => JSON.parse(localStorage.getItem('clinovaLicenseRequests') || '[]');
+        const saveLicenseRequests = (reqs) => localStorage.setItem('clinovaLicenseRequests', JSON.stringify(reqs));
+        const addLicenseRequest = (hospitalEmail, doctorEmail, license) => {
+            const reqs = getLicenseRequests();
+            const r = { id: `LR-${Date.now()}`, hospitalEmail, doctorEmail, license, status: 'PENDING', createdAt: new Date().toISOString() };
+            reqs.unshift(r);
+            saveLicenseRequests(reqs);
+            return r;
+        };
+
+        // Ensure default hospitals are seeded into registered list if empty
+        (function seedRegisteredHospitals(){
+            const seeded = getRegisteredHospitals();
+            if (seeded.length === 0) {
+                const defaults = Object.keys(hospitalLocations).map(name => ({
+                    name,
+                    email: Object.keys(hospitalIdentityMap).find(k => hospitalIdentityMap[k]===name) || '',
+                    key: `HOSP-${Math.floor(Math.random()*900)+100}`,
+                    lat: hospitalLocations[name].lat,
+                    lng: hospitalLocations[name].lng,
+                    address: hospitalLocations[name].address || ''
+                }));
+                saveRegisteredHospitals(defaults);
+            }
+        })();
+
+        const getEmergencyNotifications = () => JSON.parse(localStorage.getItem('clinovaEmergencyNotifications') || '[]');
+        const saveEmergencyNotifications = (notifications) => localStorage.setItem('clinovaEmergencyNotifications', JSON.stringify(notifications));
+        const getEmergencyAlertAudio = () => {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const now = audioContext.currentTime;
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.frequency.setValueAtTime(800, now);
+            osc.frequency.setValueAtTime(600, now + 0.1);
+            gain.gain.setValueAtTime(0.3, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+            osc.start(now);
+            osc.stop(now + 0.5);
+        };
+        const playEmergencyAlarm = () => {
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => getEmergencyAlertAudio(), i * 600);
+            }
+        };
+        const storePatientLocation = (email, latitude, longitude, address) => {
+            if (!email) return;
+            const profiles = getPatientProfiles();
+            profiles[email] = {
+                ...getStoredPatientProfile(email),
+                latitude,
+                longitude,
+                locationAddress: address
+            };
+            savePatientProfiles(profiles);
+        };
+
+        const createEmergencyNotification = (patientEmail, hospital, latitude, longitude, locationAddress, mapUrl, earthUrl) => {
+            const profile = getStoredPatientProfile(patientEmail);
+            const notification = {
+                id: `EMG-${Date.now()}`,
+                timestamp: new Date().toISOString(),
+                patientEmail,
+                patientName: profile.fullName,
+                hospital,
+                hospitalLocation: getHospitalCoordinates(hospital).address,
+                hospitalLat: getHospitalCoordinates(hospital).lat,
+                hospitalLng: getHospitalCoordinates(hospital).lng,
+                latitude,
+                longitude,
+                locationAddress,
+                mapUrl,
+                googleEarthUrl: earthUrl,
+                conditions: profile.conditions,
+                allergies: profile.allergies,
+                emergencyContacts: profile.emergencyContacts,
+                status: 'INCOMING'
+            };
+            const notifications = getEmergencyNotifications();
+            notifications.unshift(notification);
+            saveEmergencyNotifications(notifications);
+            return notification;
+        };
+
+        const generateGoogleMapsRoute = (hospitalName, patientLat, patientLng) => {
+            const hospitalCoords = getHospitalCoordinates(hospitalName);
+            return `https://www.google.com/maps/dir/?api=1&origin=${hospitalCoords.lat},${hospitalCoords.lng}&destination=${patientLat},${patientLng}&travelmode=driving`;
+        };
+
+        const buildPatientFeatureContent = (title, subtitle, contentHtml) => {
+            if (!patientFeaturePanel || !patientFeatureTitle || !patientFeatureSubtitle || !patientFeatureContent) return;
+            patientFeatureTitle.textContent = title;
+            patientFeatureSubtitle.textContent = subtitle;
+            patientFeatureContent.innerHTML = contentHtml;
+            patientFeaturePanel.classList.remove('hidden');
+            patientFeaturePanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+
+        const hospitalFeaturePanel = document.getElementById('hospitalFeaturePanel');
+        const hospitalFeatureTitle = document.getElementById('hospitalFeatureTitle');
+        const hospitalFeatureSubtitle = document.getElementById('hospitalFeatureSubtitle');
+        const hospitalFeatureContent = document.getElementById('hospitalFeatureContent');
+        const closeHospitalFeature = document.getElementById('closeHospitalFeature');
+
+        const getFeatureOwner = (action) => {
+            return Object.entries(permittedActions).find(([, actions]) => actions.includes(action))?.[0] || 'This role';
+        };
+
+        const buildHospitalFeatureContent = (title, subtitle, contentHtml) => {
+            const hospitalFeatureStatus = document.getElementById('hospitalFeatureStatus');
+            if (!hospitalFeaturePanel || !hospitalFeatureTitle || !hospitalFeatureSubtitle || !hospitalFeatureContent) return;
+            hospitalFeatureTitle.textContent = title;
+            hospitalFeatureSubtitle.textContent = subtitle;
+            hospitalFeatureContent.innerHTML = contentHtml;
+            if (hospitalFeatureStatus) {
+                hospitalFeatureStatus.textContent = `Loaded: ${title}`;
+            }
+            hospitalFeaturePanel.classList.remove('hidden');
+            hospitalFeaturePanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+
+        const closeHospitalFeaturePanel = () => {
+            hospitalFeaturePanel?.classList.add('hidden');
+        };
+
+        const makeHospitalFinderHtml = () => {
+            const registered = getRegisteredHospitals();
+            const hospitals = registered.length ? registered.map(h => ({ name: h.name, city: h.address || h.city || 'Unknown', distance: h.distance || 'N/A', lat: h.lat, lng: h.lng })) : [
+                { name: 'Kericho Town Emergency Hospital', city: 'Kericho Town', distance: '8.2 km' },
+                { name: 'Westside General Hospital', city: 'West District', distance: '2.4 km' },
+                { name: 'City Central Hospital', city: 'Central Park', distance: '3.1 km' },
+                { name: 'Northside Medical Center', city: 'North Heights', distance: '4.7 km' }
+            ];
+            const selectedHospital = getSelectedHospital();
+
+            const renderHospitalCard = (hospital) => `
+                <div class="rounded-3xl border border-gray-800 bg-gray-950/90 p-4 flex items-center justify-between gap-4">
+                    <div>
+                        <div class="text-sm font-semibold text-white">${hospital.name}</div>
+                        <div class="text-xs text-gray-500 mt-1">${hospital.city} • ${hospital.distance}</div>
+                    </div>
+                    <button type="button" data-hospital="${hospital.name}" class="select-hospital-btn rounded-full bg-gradient-to-r from-clinova-500 to-purple-500 px-4 py-2 text-white text-xs">Select</button>
+                </div>
+            `;
+
+            return `
+                <div class="grid gap-6 lg:grid-cols-2">
+                    <div class="rounded-3xl border border-purple-500/10 bg-gray-900/80 p-6 space-y-4">
+                        <div class="text-sm text-gray-400">Search nearby hospitals and choose where you want to attend.</div>
+                        <div class="grid gap-3">
+                            <input id="hospitalSearchInput" type="text" placeholder="Search hospitals by name or city" class="w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-4 py-3 text-white outline-none focus:border-clinova-400" />
+                            <button id="hospitalSearchBtn" type="button" class="rounded-2xl bg-gradient-to-r from-clinova-500 to-purple-500 px-4 py-3 text-white text-sm">Search Nearby Hospitals</button>
+                        </div>
+                        <div id="nearbyHospitalsList" class="space-y-3">
+                            ${hospitals.map(renderHospitalCard).join('')}
+                        </div>
+                    </div>
+                    <div class="rounded-3xl border border-purple-500/10 bg-gray-900/80 p-6 space-y-4">
+                        <div class="text-sm text-gray-400">Selected hospital will be used for admission requests.</div>
+                        <div id="selectedHospitalCard" class="rounded-3xl border border-gray-800 bg-gray-950/90 p-4 ${selectedHospital ? '' : 'hidden'}">
+                            <div class="text-sm font-semibold text-white">${selectedHospital || 'No hospital selected yet'}</div>
+                            <div class="text-xs text-gray-500 mt-2">${selectedHospital ? 'You may now generate your admission QR code.' : 'Choose a hospital from the list to continue.'}</div>
+                        </div>
+                        <button id="generateAdmissionQrBtn" type="button" class="rounded-2xl bg-gradient-to-r from-clinova-500 to-purple-500 px-4 py-3 text-white text-sm ${selectedHospital ? '' : 'opacity-50 cursor-not-allowed'}" ${selectedHospital ? '' : 'disabled'}>Get Admitted</button>
+                        <div class="text-xs text-gray-500">After selecting a hospital, click Get Admitted to generate your admission QR code for the receptionist.</div>
+                    </div>
+                </div>
+            `;
+        };
+
+        const createAdmissionRequest = (hospital, email) => {
+            const profile = getStoredPatientProfile(email);
+            const request = {
+                id: `ADM-${Date.now()}`,
+                email,
+                fullName: profile.fullName,
+                hospital,
+                createdAt: new Date().toISOString(),
+                status: 'pending'
+            };
+            const requests = getAdmissionRequests();
+            requests.unshift(request);
+            saveAdmissionRequests(requests);
+            return request;
+        };
+
+        const makePatientAdmissionQrHtml = () => {
+            const selectedHospital = getSelectedHospital();
+            const signedInEmail = localStorage.getItem('clinovaAuthUser') || '';
+            if (!signedInEmail) {
+                return '<div class="text-sm text-gray-400">Please sign in as a patient to generate an admission QR code.</div>';
+            }
+            if (!selectedHospital) {
+                return '<div class="text-sm text-gray-400">Select a hospital first using Search Nearby Hospitals, then return to Get Admitted.</div>';
+            }
+
+            const profile = getStoredPatientProfile(signedInEmail);
+            const request = createAdmissionRequest(selectedHospital, signedInEmail);
+            request.emergencyContacts = profile.emergencyContacts;
+            request.conditions = profile.conditions;
+            request.allergies = profile.allergies;
+            const allRequests = getAdmissionRequests();
+            const savedRequest = allRequests.find((item) => item.id === request.id);
+            if (savedRequest) {
+                savedRequest.emergencyContacts = request.emergencyContacts;
+                savedRequest.conditions = request.conditions;
+                savedRequest.allergies = request.allergies;
+                saveAdmissionRequests(allRequests);
+            }
+            const payload = JSON.stringify(request);
+            let qrDataUrl = '';
+            if (window.QRious) {
+                try {
+                    const qr = new QRious({ value: payload, size: 280 });
+                    qrDataUrl = qr.toDataURL();
+                } catch (error) {
+                    qrDataUrl = '';
+                }
+            }
+            const qrImage = qrDataUrl
+                ? `<img src="${qrDataUrl}" alt="Admission QR code" class="mx-auto rounded-3xl border border-gray-700 bg-white/5 p-2" />`
+                : '<div class="rounded-3xl border border-red-500/10 bg-gray-900/80 p-6 text-red-300">QR generation failed. Please refresh the page and try again.</div>';
+
+            return `
+                <div class="grid gap-6 lg:grid-cols-2">
+                    <div class="rounded-3xl border border-purple-500/10 bg-gray-900/80 p-6 text-center">
+                        <div class="text-sm text-gray-400 mb-4">Show this QR code to the hospital receptionist when you arrive.</div>
+                        ${qrImage}
+                        <div class="mt-6 text-left space-y-2 text-gray-300 text-sm">
+                            <div><span class="font-semibold text-white">Hospital:</span> ${request.hospital}</div>
+                            <div><span class="font-semibold text-white">Patient:</span> ${request.fullName}</div>
+                            <div><span class="font-semibold text-white">Email:</span> ${request.email}</div>
+                            <div><span class="font-semibold text-white">Request ID:</span> ${request.id}</div>
+                        </div>
+                    </div>
+                    <div class="rounded-3xl border border-purple-500/10 bg-gray-900/80 p-6 space-y-3">
+                        <div class="text-sm text-gray-400">Your admission code is ready. The receptionist scans this QR to import your admission request into the hospital system.</div>
+                        <div class="text-xs text-gray-500">Please keep this screen visible until the receptionist confirms it.</div>
+                    </div>
+                </div>
+            `;
+        };
+
+        const attachPatientAdmissionHandlers = () => {
+            const hospitalSearchInput = document.getElementById('hospitalSearchInput');
+            const hospitalSearchBtn = document.getElementById('hospitalSearchBtn');
+            const nearbyHospitalsList = document.getElementById('nearbyHospitalsList');
+            const selectedHospitalCard = document.getElementById('selectedHospitalCard');
+            const hospitals = [
+                { name: 'Kericho Town Emergency Hospital', city: 'Kericho Town', distance: '8.2 km' },
+                { name: 'Westside General Hospital', city: 'West District', distance: '2.4 km' },
+                { name: 'City Central Hospital', city: 'Central Park', distance: '3.1 km' },
+                { name: 'Northside Medical Center', city: 'North Heights', distance: '4.7 km' }
+            ];
+
+            const renderHospitalList = (query = '') => {
+                const lowerQuery = query.trim().toLowerCase();
+                const filtered = hospitals.filter((hospital) =>
+                    hospital.name.toLowerCase().includes(lowerQuery) ||
+                    hospital.city.toLowerCase().includes(lowerQuery) ||
+                    hospital.distance.toLowerCase().includes(lowerQuery)
+                );
+                nearbyHospitalsList.innerHTML = filtered.length === 0
+                    ? '<div class="text-sm text-gray-400">No hospitals matched your search.</div>'
+                    : filtered.map((hospital) => `
+                        <div class="rounded-3xl border border-gray-800 bg-gray-950/90 p-4 flex items-center justify-between gap-4">
+                            <div>
+                                <div class="text-sm font-semibold text-white">${hospital.name}</div>
+                                <div class="text-xs text-gray-500 mt-1">${hospital.city} • ${hospital.distance}</div>
+                            </div>
+                            <button type="button" data-hospital="${hospital.name}" class="select-hospital-btn rounded-full bg-gradient-to-r from-clinova-500 to-purple-500 px-4 py-2 text-white text-xs">Select</button>
+                        </div>
+                    `).join('');
+                attachHospitalSelectButtons();
+            };
+
+            const attachHospitalSelectButtons = () => {
+                nearbyHospitalsList.querySelectorAll('.select-hospital-btn').forEach((button) => {
+                    button.addEventListener('click', () => {
+                        const hospital = button.dataset.hospital;
+                        if (!hospital) return;
+                        saveSelectedHospital(hospital);
+                        if (selectedHospitalCard) {
+                            selectedHospitalCard.classList.remove('hidden');
+                            selectedHospitalCard.innerHTML = `
+                                <div class="text-sm font-semibold text-white">${hospital}</div>
+                                <div class="text-xs text-gray-500 mt-2">You may now generate your admission QR code in Get Admitted.</div>
+                            `;
+                        }
+                        showRoleActionMessage(`Selected ${hospital} for admission.`, true);
+                    });
+                });
+            };
+
+            if (hospitalSearchBtn && hospitalSearchInput) {
+                hospitalSearchBtn.addEventListener('click', () => {
+                    renderHospitalList(hospitalSearchInput.value || '');
+                });
+            }
+            const generateAdmissionQrBtn = document.getElementById('generateAdmissionQrBtn');
+            if (generateAdmissionQrBtn) {
+                generateAdmissionQrBtn.addEventListener('click', () => {
+                    const selectedHospital = getSelectedHospital();
+                    if (!selectedHospital) {
+                        showRoleActionMessage('Please select a hospital first before generating admission QR.', false);
+                        return;
+                    }
+                    buildPatientFeatureContent('Admission QR Code', 'Show this QR code to the receptionist to complete your check-in.', makePatientAdmissionQrHtml());
+                });
+            }
+            renderHospitalList('');
+        };
+
+        const attachSOSEmergencyHandlers = () => {
+            const sosEmergencyBtn = document.getElementById('sosEmergencyBtn');
+            const sosEmergencyResult = document.getElementById('sosEmergencyResult');
+            const sosEmergencyDetails = document.getElementById('sosEmergencyDetails');
+            const signedInEmail = localStorage.getItem('clinovaAuthUser') || '';
+
+            if (!sosEmergencyBtn) return;
+
+            sosEmergencyBtn.addEventListener('click', () => {
+                const hospitalSelect = document.getElementById('sosHospitalSelect');
+                const chosenHospital = hospitalSelect?.value || getSelectedHospital();
+                if (!chosenHospital) {
+                    showRoleActionMessage('Please choose a hospital destination before activating SOS.', false);
+                    return;
+                }
+
+                const latitude = mockPatientLocation.lat;
+                const longitude = mockPatientLocation.lng;
+                const locationAddress = mockPatientLocation.address;
+                const mapsRoute = generateGoogleMapsRoute(chosenHospital, latitude, longitude);
+                const earthUrl = generateGoogleEarthLink(latitude, longitude);
+                const notification = createEmergencyNotification(
+                    signedInEmail,
+                    chosenHospital,
+                    latitude,
+                    longitude,
+                    locationAddress,
+                    mapsRoute,
+                    earthUrl
+                );
+                storePatientLocation(signedInEmail, latitude, longitude, locationAddress);
+
+                playEmergencyAlarm();
+
+                sosEmergencyBtn.classList.add('hidden');
+                sosEmergencyResult.classList.remove('hidden');
+                sosEmergencyDetails.innerHTML = `
+                    <div class="flex items-center gap-3 mb-4">
+                        <i data-lucide="map-pin" class="w-5 h-5 text-green-400"></i>
+                        <div>
+                            <div class="font-semibold text-green-400">Location Set</div>
+                            <div class="text-xs text-gray-500">${locationAddress}</div>
+                            <div class="text-xs text-gray-500">Latitude: ${latitude.toFixed(6)}</div>
+                            <div class="text-xs text-gray-500">Longitude: ${longitude.toFixed(6)}</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <i data-lucide="hospital" class="w-5 h-5 text-blue-400"></i>
+                        <div>
+                            <div class="font-semibold text-blue-400">Hospital Notified</div>
+                            <div class="text-xs text-gray-500">${chosenHospital} has received your emergency alert</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <i data-lucide="phone" class="w-5 h-5 text-red-400"></i>
+                        <div>
+                            <div class="font-semibold text-red-400">Contacts Alerted</div>
+                            <div class="text-xs text-gray-500">Family and emergency contacts notified: ${getStoredPatientProfile(signedInEmail).emergencyContacts}</div>
+                        </div>
+                    </div>
+                    <div class="grid gap-3 sm:grid-cols-2">
+                        <a href="${mapsRoute}" target="_blank" class="text-center text-xs bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-lg py-2 hover:bg-blue-500/30 transition-all">
+                            <i data-lucide="map" class="w-3 h-3 inline mr-1"></i> View Route
+                        </a>
+                        <a href="${earthUrl}" target="_blank" class="text-center text-xs bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-lg py-2 hover:bg-emerald-500/30 transition-all">
+                            <i data-lucide="globe" class="w-3 h-3 inline mr-1"></i> View in Google Earth
+                        </a>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-gray-700">
+                        <div class="text-xs text-gray-400">Emergency ID: ${notification.id}</div>
+                        <div class="text-xs text-gray-400">Time: ${new Date(notification.timestamp).toLocaleTimeString()}</div>
+                    </div>
+                `;
+                lucide.createIcons();
+
+                showRoleActionMessage(`Emergency alert sent to ${chosenHospital}. Hospital receives your location, route and Google Earth link.`, true);
+            });
+        };
+
+        const attachEmergencyFeedHandlers = () => {
+            document.querySelectorAll('.emergency-respond-btn').forEach((button) => {
+                button.addEventListener('click', () => {
+                    const emergencyId = button.getAttribute('data-emergency-id');
+                    if (!emergencyId) return;
+                    const notifications = getEmergencyNotifications();
+                    const notification = notifications.find((n) => n.id === emergencyId);
+                    if (!notification) return;
+                    notification.status = 'DISPATCHED';
+                    saveEmergencyNotifications(notifications);
+                    showRoleActionMessage(`Emergency team dispatched for ${notification.patientName}. Route activated to coordinates.`, true);
+                    button.textContent = '✓ Dispatched';
+                    button.disabled = true;
+                    button.classList.add('opacity-50', 'cursor-not-allowed');
+                });
+            });
+        };
+
+        const attachReceptionistHandlers = () => {
+            const scanAdmissionQrBtn = document.getElementById('scanAdmissionQrBtn');
+            const admitLatestRequestBtn = document.getElementById('admitLatestRequestBtn');
+            const scanAdmissionResult = document.getElementById('scanAdmissionResult');
+            const scanAdmissionDetails = document.getElementById('scanAdmissionDetails');
+            const currentHospital = getSignedInHospitalName();
+
+            const setResult = (message, success = true) => {
+                if (!scanAdmissionResult) return;
+                scanAdmissionResult.textContent = message;
+                scanAdmissionResult.classList.toggle('text-emerald-400', success);
+                scanAdmissionResult.classList.toggle('text-red-400', !success);
+            };
+
+            const renderAdmissionDetails = (request) => {
+                if (!scanAdmissionDetails) return;
+                scanAdmissionDetails.classList.remove('hidden');
+                scanAdmissionDetails.innerHTML = `
+                    <div class="text-sm font-semibold text-white mb-3">Scanned Admission Details</div>
+                    <div class="space-y-2 text-gray-300 text-sm">
+                        <div><span class="font-semibold text-white">Patient:</span> ${request.fullName}</div>
+                        <div><span class="font-semibold text-white">Email:</span> ${request.email}</div>
+                        <div><span class="font-semibold text-white">Hospital:</span> ${request.hospital}</div>
+                        <div><span class="font-semibold text-white">Emergency Contacts:</span> ${request.emergencyContacts || 'Not provided'}</div>
+                        <div><span class="font-semibold text-white">Conditions:</span> ${request.conditions || 'Not provided'}</div>
+                        <div><span class="font-semibold text-white">Allergies:</span> ${request.allergies || 'Not provided'}</div>
+                        <div><span class="font-semibold text-white">Request ID:</span> ${request.id}</div>
+                        <div><span class="font-semibold text-white">Requested At:</span> ${new Date(request.createdAt).toLocaleString()}</div>
+                    </div>
+                `;
+            };
+
+            if (scanAdmissionQrBtn) {
+                scanAdmissionQrBtn.addEventListener('click', () => {
+                    const pending = getAdmissionRequests().filter((request) => request.hospital === currentHospital && request.status === 'pending');
+                    if (pending.length === 0) {
+                        setResult(`No pending admission QR requests for ${currentHospital}.`, false);
+                        return;
+                    }
+                    const requests = getAdmissionRequests();
+                    const target = requests.find((item) => item.hospital === currentHospital && item.status === 'pending');
+                    if (!target) {
+                        setResult('No pending admission request found to process.', false);
+                        return;
+                    }
+                    target.status = 'admitted';
+                    saveAdmissionRequests(requests);
+                    const admitted = getAdmittedPatients();
+                    admitted.unshift({
+                        id: target.id,
+                        email: target.email,
+                        fullName: target.fullName,
+                        hospital: target.hospital,
+                        emergencyContacts: target.emergencyContacts || 'Not provided',
+                        conditions: target.conditions || 'Not provided',
+                        allergies: target.allergies || 'Not provided',
+                        admittedAt: new Date().toISOString()
+                    });
+                    saveAdmittedPatients(admitted);
+                    window.latestScannedAdmission = target.id;
+                    renderAdmissionDetails(target);
+                    setResult(`QR scanned and saved ${target.fullName} into ${currentHospital}.`);
+                    handleHospitalFeature('Smart Admission');
+                });
+            }
+
+            if (admitLatestRequestBtn) {
+                admitLatestRequestBtn.addEventListener('click', () => {
+                    const requests = getAdmissionRequests();
+                    const target = requests.find((item) => item.hospital === currentHospital && item.status === 'pending');
+                    if (!target) {
+                        setResult('No admission request is selected or pending for this hospital.', false);
+                        return;
+                    }
+                    target.status = 'admitted';
+                    saveAdmissionRequests(requests);
+                    const admitted = getAdmittedPatients();
+                    admitted.unshift({ ...target, admittedAt: new Date().toISOString() });
+                    saveAdmittedPatients(admitted);
+                    window.latestScannedAdmission = target.id;
+                    renderAdmissionDetails(target);
+                    setResult(`Patient ${target.fullName} has been admitted to ${currentHospital}.`);
+                    handleHospitalFeature('Smart Admission');
+                });
+            }
+
+            // hospital requests doctor license
+            const requestDoctorLicenseBtn = document.getElementById('requestDoctorLicenseBtn');
+            if (requestDoctorLicenseBtn) {
+                requestDoctorLicenseBtn.addEventListener('click', () => {
+                    const doctorEmail = (document.getElementById('requestDoctorEmail')?.value || '').trim();
+                    const license = (document.getElementById('requestDoctorLicense')?.value || '').trim();
+                    if (!doctorEmail || !license) { setResult('Doctor email and license number required to make a request.', false); return; }
+                    const hospitalEmail = localStorage.getItem('clinovaAuthUser') || '';
+                    const req = addLicenseRequest(hospitalEmail, doctorEmail, license);
+                    setResult(`License request ${req.id} submitted for ${doctorEmail}`);
+                });
+            }
+        };
+
+        const makeHospitalStatusHtml = () => {
+            const profiles = Object.values(getPatientProfiles());
+            const totalPatients = profiles.length;
+            const currentHospital = getSignedInHospitalName();
+            const registered = getRegisteredHospitals().find(h => h.name === currentHospital) || {};
+            const bedsFree = registered.bedsFree ?? 42;
+            const icuFree = registered.icuFree ?? 6;
+            const erQueue = registered.erQueue ?? 3;
+            return `
+                <div class="grid gap-4 md:grid-cols-2">
+                    <div class="bg-gray-900/80 rounded-3xl p-6 border border-purple-500/10">
+                        <div class="text-sm text-gray-400 mb-3">Current hospital capacity snapshot</div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="rounded-2xl bg-purple-950/50 p-4 text-center">
+                                <div class="text-4xl font-bold text-purple-400">${bedsFree}</div>
+                                <div class="text-xs text-gray-500 mt-2">Beds Free</div>
+                            </div>
+                            <div class="rounded-2xl bg-purple-950/50 p-4 text-center">
+                                <div class="text-4xl font-bold text-yellow-400">${icuFree}</div>
+                                <div class="text-xs text-gray-500 mt-2">ICU Free</div>
+                            </div>
+                            <div class="rounded-2xl bg-purple-950/50 p-4 text-center">
+                                <div class="text-4xl font-bold text-red-400">${erQueue}</div>
+                                <div class="text-xs text-gray-500 mt-2">ER Queue</div>
+                            </div>
+                            <div class="rounded-2xl bg-purple-950/50 p-4 text-center">
+                                <div class="text-4xl font-bold text-clinova-400">${totalPatients}</div>
+                                <div class="text-xs text-gray-500 mt-2">Active Patients</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900/80 rounded-3xl p-6 border border-purple-500/10">
+                        <div class="text-sm text-gray-400 mb-3">Department load and readiness</div>
+                        <div class="space-y-3">
+                            <div class="text-xs text-gray-500">Cardiology now at 70% capacity</div>
+                            <div class="w-full bg-gray-800 rounded-full h-2 overflow-hidden"><div class="h-2 rounded-full bg-purple-500" style="width:70%"></div></div>
+                            <div class="text-xs text-gray-500">Neurology now at 55% capacity</div>
+                            <div class="w-full bg-gray-800 rounded-full h-2 overflow-hidden"><div class="h-2 rounded-full bg-purple-400" style="width:55%"></div></div>
+                            <div class="text-xs text-gray-500">Trauma now at 82% capacity</div>
+                            <div class="w-full bg-gray-800 rounded-full h-2 overflow-hidden"><div class="h-2 rounded-full bg-red-400" style="width:82%"></div></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        };
+
+        const makeEmergencyFeedHtml = () => {
+            const currentHospital = getSignedInHospitalName();
+            const allNotifications = getEmergencyNotifications();
+            const incomingNotifications = allNotifications.filter((n) => n.status === 'INCOMING' && n.hospital === currentHospital);
+
+            if (incomingNotifications.length === 0) {
+                return `
+                    <div class="rounded-3xl border border-purple-500/10 bg-gray-900/80 p-8 text-center">
+                        <i data-lucide="inbox" class="w-12 h-12 text-gray-600 mx-auto mb-3"></i>
+                        <div class="text-sm text-gray-400">No incoming emergency alerts for ${currentHospital}.</div>
+                        <div class="text-xs text-gray-500 mt-2">Patient SOS alerts will appear here with live routing and Google Earth links.</div>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="space-y-4">
+                    <div class="text-sm text-gray-400 mb-3">Live incoming SOS emergency alerts with patient location, contact info, and routing.</div>
+                    ${incomingNotifications.map(notification => {
+                        const mapsRoute = notification.mapUrl || generateGoogleMapsRoute(notification.hospital, notification.latitude, notification.longitude);
+                        const earthRoute = notification.googleEarthUrl || generateGoogleEarthLink(notification.latitude, notification.longitude);
+                        return `
+                            <div class="rounded-3xl border border-red-500/20 bg-red-950/30 p-4 hover:border-red-500/40 transition-all">
+                                <div class="flex justify-between gap-4 items-start mb-3">
+                                    <div>
+                                        <div class="text-sm font-semibold text-red-300">${notification.patientName}</div>
+                                        <div class="text-xs text-gray-500 mt-1">${notification.patientEmail}</div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
+                                        <div class="text-xs font-semibold text-red-400">ACTIVE</div>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 mb-3 text-xs text-gray-400">
+                                    <div><strong>Condition:</strong> ${notification.conditions}</div>
+                                    <div><strong>Allergies:</strong> ${notification.allergies}</div>
+                                    <div><strong>Contacts:</strong> ${notification.emergencyContacts}</div>
+                                    <div><strong>ID:</strong> ${notification.id}</div>
+                                </div>
+                                <div class="grid gap-2 sm:grid-cols-3 mb-3">
+                                    <a href="${mapsRoute}" target="_blank" class="text-center text-xs bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-lg py-2 hover:bg-blue-500/30 transition-all">
+                                        <i data-lucide="map" class="w-3 h-3 inline mr-1"></i> View Route
+                                    </a>
+                                    <a href="${earthRoute}" target="_blank" class="text-center text-xs bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-lg py-2 hover:bg-emerald-500/30 transition-all">
+                                        <i data-lucide="globe" class="w-3 h-3 inline mr-1"></i> Google Earth
+                                    </a>
+                                    <button class="text-xs bg-green-500/20 text-green-300 border border-green-500/30 rounded-lg py-2 hover:bg-green-500/30 transition-all emergency-respond-btn" data-emergency-id="${notification.id}">
+                                        <i data-lucide="check" class="w-3 h-3 inline mr-1"></i> Dispatch
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        };
+
+        const makeSmartAdmissionHtml = () => {
+            const currentHospital = getSignedInHospitalName();
+            const pending = getAdmissionRequests().filter((request) => request.hospital === currentHospital && request.status === 'pending');
+            const admitted = getAdmittedPatients().filter((record) => record.hospital === currentHospital);
+
+            const pendingHtml = pending.length === 0
+                ? '<div class="text-sm text-gray-400">No pending admission QR scans available for this hospital right now.</div>'
+                : pending.map(request => `
+                    <div class="rounded-3xl border border-purple-500/10 bg-gray-900/80 p-4">
+                        <div class="text-sm font-semibold text-white">${request.fullName}</div>
+                        <div class="text-xs text-gray-500 mt-1">${request.email}</div>
+                        <div class="text-xs text-gray-500 mt-1">Requested ${new Date(request.createdAt).toLocaleString()}</div>
+                    </div>
+                `).join('');
+
+            const admittedHtml = admitted.length === 0
+                ? '<div class="text-sm text-gray-400">No admitted patients have been registered in this hospital yet.</div>'
+                : admitted.map(record => `
+                    <div class="rounded-3xl border border-green-500/10 bg-gray-900/80 p-4">
+                        <div class="text-sm font-semibold text-white">${record.fullName}</div>
+                        <div class="text-xs text-gray-500 mt-1">${record.email}</div>
+                        <div class="text-xs text-gray-500 mt-1">Admitted ${new Date(record.admittedAt).toLocaleString()}</div>
+                    </div>
+                `).join('');
+
+            return `
+                <div class="grid gap-4 lg:grid-cols-2">
+                    <div class="rounded-3xl border border-purple-500/10 bg-gray-900/80 p-6 space-y-4">
+                        <div class="text-sm text-gray-400">Receptionist admission workflow for ${currentHospital}.</div>
+                        <button id="scanAdmissionQrBtn" type="button" class="rounded-2xl bg-gradient-to-r from-clinova-500 to-purple-500 px-4 py-3 text-white text-sm">Scan Patient QR Code</button>
+                        <button id="admitLatestRequestBtn" type="button" class="rounded-2xl border border-gray-700 bg-gray-950/80 px-4 py-3 text-white text-sm">Confirm Admission</button>
+                        <div id="scanAdmissionResult" class="text-sm text-gray-300"></div>
+                        <div id="scanAdmissionDetails" class="hidden rounded-3xl border border-gray-800 bg-gray-950/90 p-4 text-sm text-gray-300"></div>
+                        <div class="mt-4">
+                            <div class="text-sm text-gray-400 mb-2">Request doctor license (on behalf of a doctor)</div>
+                            <input id="requestDoctorEmail" placeholder="Doctor email" class="w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-3 py-2 text-white mb-2" />
+                            <input id="requestDoctorLicense" placeholder="Proposed license number" class="w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-3 py-2 mb-2 text-white" />
+                            <button id="requestDoctorLicenseBtn" class="rounded-2xl bg-gradient-to-r from-clinova-500 to-purple-500 px-4 py-2 text-white text-sm">Request License</button>
+                        </div>
+                    </div>
+                    <div class="rounded-3xl border border-purple-500/10 bg-gray-900/80 p-6 space-y-4">
+                        <div class="text-sm text-gray-400">Pending admission requests.</div>
+                        ${pendingHtml}
+                    </div>
+                </div>
+                <div class="rounded-3xl border border-green-500/10 bg-gray-900/80 p-6 mt-4">
+                    <div class="text-sm text-gray-400 mb-3">Admitted patients at this hospital.</div>
+                    ${admittedHtml}
+                </div>
+            `;
+        };
+
+        const renderPatientRecordsPanel = (searchQuery = '') => {
+            const profiles = Object.values(getPatientProfiles());
+            const filtered = profiles.filter(profile =>
+                profile.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                profile.fullName.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+            const listHtml = filtered.length === 0
+                ? '<div class="text-sm text-gray-400">No matching patient records found.</div>'
+                : filtered.map(profile => `
+                    <div class="rounded-3xl border border-purple-500/10 bg-gray-900/80 p-4">
+                        <div class="flex items-start justify-between gap-4">
+                            <div>
+                                <div class="text-sm font-semibold text-white">${profile.fullName}</div>
+                                <div class="text-xs text-gray-500 mt-1">${profile.email}</div>
+                                <div class="text-xs text-gray-500 mt-1">DOB: ${profile.dob}</div>
+                            </div>
+                            <button type="button" data-email="${profile.email}" class="view-record-btn rounded-full px-4 py-2 bg-gradient-to-r from-purple-500 to-clinova-500 text-white text-xs">View</button>
+                        </div>
+                    </div>
+                `).join('');
+
+            const contentHtml = `
+                <div class="grid gap-6 lg:grid-cols-2">
+                    <div class="rounded-3xl border border-purple-500/10 bg-gray-900/80 p-6 space-y-4">
+                        <div class="text-sm text-gray-400">Search existing patient records.</div>
+                        <div class="grid gap-3">
+                            <input id="patientSearchInput" type="text" placeholder="Search by email or name" class="w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-4 py-3 text-white outline-none focus:border-clinova-400" />
+                            <button id="patientSearchBtn" class="rounded-2xl bg-gradient-to-r from-purple-500 to-clinova-500 px-4 py-3 text-white text-sm">Search Records</button>
+                        </div>
+                        <div class="text-sm text-gray-400">Register a new patient record.</div>
+                        <div class="grid gap-3">
+                            <input id="newPatientEmail" type="email" placeholder="Email" class="w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-4 py-3 text-white outline-none focus:border-clinova-400" />
+                            <input id="newPatientName" type="text" placeholder="Full name" class="w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-4 py-3 text-white outline-none focus:border-clinova-400" />
+                            <input id="newPatientDob" type="text" placeholder="Date of birth" class="w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-4 py-3 text-white outline-none focus:border-clinova-400" />
+                            <input id="newPatientAllergies" type="text" placeholder="Allergies" class="w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-4 py-3 text-white outline-none focus:border-clinova-400" />
+                            <input id="newPatientConditions" type="text" placeholder="Conditions" class="w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-4 py-3 text-white outline-none focus:border-clinova-400" />
+                            <input id="newPatientContacts" type="text" placeholder="Emergency contacts" class="w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-4 py-3 text-white outline-none focus:border-clinova-400" />
+                            <textarea id="newPatientNotes" rows="4" placeholder="Doctor notes" class="w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-4 py-3 text-white outline-none focus:border-clinova-400"></textarea>
+                            <button id="patientRegisterBtn" class="rounded-2xl bg-gradient-to-r from-clinova-500 to-purple-500 px-4 py-3 text-white text-sm">Register Patient</button>
+                        </div>
+                    </div>
+                    <div class="rounded-3xl border border-purple-500/10 bg-gray-900/80 p-6 space-y-4">
+                        <div class="text-sm text-gray-400">Patient records available from doctor updates.</div>
+                        <div id="patientRecordsList" class="space-y-3">${listHtml}</div>
+                    </div>
+                </div>
+                <div id="patientRecordDetail" class="hidden rounded-3xl border border-purple-500/10 bg-gray-950/90 p-6 mt-6 text-sm text-gray-300"></div>
+            `;
+
+            buildHospitalFeatureContent('Patient Records', 'Search, register and view patient records created by doctors.', contentHtml);
+            attachHospitalRecordHandlers();
+        };
+
+        const attachHospitalRecordHandlers = () => {
+            const searchInput = document.getElementById('patientSearchInput');
+            const searchButton = document.getElementById('patientSearchBtn');
+            const registerButton = document.getElementById('patientRegisterBtn');
+            const recordList = document.getElementById('patientRecordsList');
+            const detailPanel = document.getElementById('patientRecordDetail');
+
+            const renderDetailForEmail = (email) => {
+                const profiles = getPatientProfiles();
+                const profile = profiles[email];
+                if (!profile) {
+                    if (detailPanel) {
+                        detailPanel.classList.add('hidden');
+                    }
+                    return;
+                }
+                if (!detailPanel) return;
+                detailPanel.classList.remove('hidden');
+                detailPanel.innerHTML = `
+                    <div class="flex items-center justify-between gap-4 mb-4">
+                        <div>
+                            <div class="text-lg font-semibold text-white">${profile.fullName}</div>
+                            <div class="text-xs text-gray-500">${profile.email}</div>
+                        </div>
+                        <button id="downloadPatientRecordBtn" class="rounded-full bg-gradient-to-r from-purple-500 to-clinova-500 px-4 py-2 text-white text-xs">Download Record</button>
+                    </div>
+                    <div class="grid gap-3 md:grid-cols-2">
+                        <div><span class="text-xs text-gray-500">DOB</span><div class="text-sm text-white mt-1">${profile.dob}</div></div>
+                        <div><span class="text-xs text-gray-500">Emergency Contacts</span><div class="text-sm text-white mt-1">${profile.emergencyContacts}</div></div>
+                        <div><span class="text-xs text-gray-500">Allergies</span><div class="text-sm text-white mt-1">${profile.allergies}</div></div>
+                        <div><span class="text-xs text-gray-500">Conditions</span><div class="text-sm text-white mt-1">${profile.conditions}</div></div>
+                    </div>
+                    <div class="mt-4">
+                        <span class="text-xs text-gray-500">Doctor Notes</span>
+                        <div class="text-sm text-white mt-2">${profile.doctorNotes}</div>
+                    </div>
+                `;
+                const downloadButton = document.getElementById('downloadPatientRecordBtn');
+                downloadButton?.addEventListener('click', () => {
+                    downloadPatientProfilePDF(email);
+                });
+            };
+
+            if (searchButton && searchInput) {
+                searchButton.addEventListener('click', () => {
+                    renderPatientRecordsPanel(searchInput.value.trim());
+                });
+            }
+
+            if (registerButton) {
+                registerButton.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const emailField = document.getElementById('newPatientEmail');
+                    const nameField = document.getElementById('newPatientName');
+                    const dobField = document.getElementById('newPatientDob');
+                    const allergiesField = document.getElementById('newPatientAllergies');
+                    const conditionsField = document.getElementById('newPatientConditions');
+                    const contactsField = document.getElementById('newPatientContacts');
+                    const notesField = document.getElementById('newPatientNotes');
+                    if (!emailField || !nameField || !dobField || !allergiesField || !conditionsField || !contactsField || !notesField) return;
+                    const email = emailField.value.trim();
+                    if (!email.includes('@')) {
+                        showRoleActionMessage('Enter a valid email to register a patient.', false);
+                        return;
+                    }
+                    const profiles = getPatientProfiles();
+                    profiles[email] = {
+                        fullName: nameField.value.trim() || 'New Patient',
+                        email,
+                        dob: dobField.value.trim() || 'Unknown',
+                        allergies: allergiesField.value.trim() || 'None recorded',
+                        conditions: conditionsField.value.trim() || 'Pending assessment',
+                        emergencyContacts: contactsField.value.trim() || 'Not provided',
+                        doctorNotes: notesField.value.trim() || 'Record created by hospital staff.'
+                    };
+                    savePatientProfiles(profiles);
+                    showRoleActionMessage(`Registered patient ${profiles[email].fullName}.`, true);
+                    renderPatientRecordsPanel('');
+                });
+            }
+
+            recordList?.querySelectorAll('.view-record-btn').forEach((button) => {
+                button.addEventListener('click', () => {
+                    const email = button.getAttribute('data-email');
+                    if (!email) return;
+                    renderDetailForEmail(email);
+                });
+            });
+        };
+
+        const handleHospitalFeature = (action) => {
+            if (action === 'Capacity Panel') {
+                buildHospitalFeatureContent('Hospital Status Panel', 'Available beds, ICU availability, department capacity', makeHospitalStatusHtml());
+                // attach update handler for capacity edits
+                setTimeout(() => {
+                    const updateBtn = document.getElementById('updateHospitalCapacityBtn');
+                    if (!updateBtn) return;
+                    updateBtn.addEventListener('click', () => {
+                        const bedsVal = parseInt(document.getElementById('hospitalBedsFree')?.value || '0', 10) || 0;
+                        const icuVal = parseInt(document.getElementById('hospitalIcuFree')?.value || '0', 10) || 0;
+                        const erVal = parseInt(document.getElementById('hospitalErQueue')?.value || '0', 10) || 0;
+                        const facilitiesVal = document.getElementById('hospitalFacilities')?.value || '';
+                        const hospitalEmail = localStorage.getItem('clinovaAuthUser');
+                        const regs = getRegisteredHospitals();
+                        const idx = regs.findIndex(h => h.email === hospitalEmail || h.name === getSignedInHospitalName());
+                        if (idx === -1) return alert('Unable to locate registered hospital to update.');
+                        regs[idx].bedsFree = bedsVal;
+                        regs[idx].icuFree = icuVal;
+                        regs[idx].erQueue = erVal;
+                        regs[idx].facilities = facilitiesVal;
+                        saveRegisteredHospitals(regs);
+                        // refresh panel
+                        handleHospitalFeature('Capacity Panel');
+                    });
+                }, 150);
+                return;
+            }
+            if (action === 'Emergency Feed') {
+                buildHospitalFeatureContent('Emergency Feed', 'Incoming patients with predicted conditions and ETA', makeEmergencyFeedHtml());
+                attachEmergencyFeedHandlers();
+                return;
+            }
+            if (action === 'Smart Admission') {
+                buildHospitalFeatureContent('Receptionist Admission Desk', 'Scan patient admission QR codes and confirm patients as admitted.', makeSmartAdmissionHtml());
+                attachReceptionistHandlers();
+                return;
+            }
+            if (action === 'Patient Records') {
+                renderPatientRecordsPanel();
+                return;
+            }
+            buildHospitalFeatureContent(action, 'Hospital feature loaded.', '<p class="text-sm text-gray-400">This hospital feature is available.</p>');
+        };
+
+        closeHospitalFeature?.addEventListener('click', closeHospitalFeaturePanel);
+        closePatientFeature?.addEventListener('click', () => {
+            patientFeaturePanel?.classList.add('hidden');
+        });
+
+        const setDashboardVisibility = (role) => {
+            if (!patientDashboard || !doctorDashboard || !hospitalDashboard || !emergencyDashboard || !emergencyFlowSection) return;
+            const showPatient = role === 'Patient';
+            const showDoctor = role === 'Doctor';
+            const showHospital = role === 'Hospital';
+            // Only show one primary dashboard at a time: Patient, Doctor, or Hospital.
+            patientDashboard.classList.toggle('hidden', !showPatient);
+            doctorDashboard.classList.toggle('hidden', !showDoctor);
+            hospitalDashboard.classList.toggle('hidden', !showHospital);
+            // Emergency dashboard/section is removed from role dashboards per request
+            emergencyDashboard.classList.add('hidden');
+            emergencyFlowSection.classList.add('hidden');
+            emergencyNavLinks.forEach((link) => link.classList.add('hidden'));
+            // Also hide the top role cards for roles that are not signed-in
+            try {
+                document.getElementById('rolePatient')?.classList.toggle('hidden', !showPatient);
+                document.getElementById('roleDoctor')?.classList.toggle('hidden', !showDoctor);
+                document.getElementById('roleHospital')?.classList.toggle('hidden', !showHospital);
+                document.getElementById('roleEmergency')?.classList.add('hidden');
+            } catch (e) {
+                console.warn('Top role card toggle failed', e);
+            }
+        };
+
+        const initializeDashboardView = () => {
+            const role = getCurrentRole();
+            if (!role) {
+                if (patientDashboard) patientDashboard.classList.remove('hidden');
+                if (doctorDashboard) doctorDashboard.classList.remove('hidden');
+                if (hospitalDashboard) hospitalDashboard.classList.remove('hidden');
+                if (emergencyDashboard) emergencyDashboard.classList.remove('hidden');
+                // show admin button if current user is admin
+                showAdminButton();
+                return;
+            }
+            setDashboardVisibility(role);
+            showRoleActionMessage(`Signed in as ${role}. Showing the ${role} dashboard only.`, true);
+            showAdminButton();
+        };
+
+        // Admin helpers
+        const getAdminList = () => JSON.parse(localStorage.getItem('clinovaAdmins') || JSON.stringify(['admin@clinova.ai']));
+        const saveAdminList = (list) => localStorage.setItem('clinovaAdmins', JSON.stringify(list));
+        const isAdminUser = (email) => getAdminList().includes(email);
+        const showAdminButton = () => {
+            const adminBtnEl = document.getElementById('adminBtn');
+            if (!adminBtnEl) return;
+            const email = localStorage.getItem('clinovaAuthUser');
+            if (email && isAdminUser(email)) {
+                adminBtnEl.classList.remove('hidden');
+            } else {
+                adminBtnEl.classList.add('hidden');
+            }
+        };
+
+        const populateAdminLists = () => {
+            const hospitalsEl = document.getElementById('registeredHospitalsList');
+            const doctorsEl = document.getElementById('registeredDoctorsList');
+            const usersEl = document.getElementById('registeredUsersList');
+            const requestsEl = document.getElementById('licenseRequestsList');
+            if (hospitalsEl) {
+                const hs = getRegisteredHospitals();
+                hospitalsEl.innerHTML = hs.length === 0 ? '<div class="text-sm text-gray-400">No hospitals registered.</div>' : hs.map(h => `
+                    <div class="mb-2" data-hospital-email="${h.email || ''}">
+                        <strong>${h.name}</strong>
+                        <div class="text-xs text-gray-500">${h.email || ''} • ${h.address || ''}</div>
+                        <div class="mt-1">
+                            <button data-action="hospital-edit" data-email="${h.email || ''}" class="text-xs mr-2 px-2 py-1 rounded bg-gray-800/60">Edit</button>
+                            <button data-action="hospital-block" data-email="${h.email || ''}" class="text-xs mr-2 px-2 py-1 rounded bg-red-600/20">Block</button>
+                            <button data-action="hospital-delete" data-email="${h.email || ''}" class="text-xs px-2 py-1 rounded bg-red-600/20">Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            if (doctorsEl) {
+                const docs = getRegisteredDoctors();
+                doctorsEl.innerHTML = docs.length === 0 ? '<div class="text-sm text-gray-400">No doctors registered.</div>' : docs.map(d => `
+                    <div class="mb-2" data-doctor-email="${d.email}">
+                        <strong>${d.name}</strong>
+                        <div class="text-xs text-gray-500">${d.email || ''} • ${d.license || ''} ${d.licenseApproved ? '• Approved' : '• Pending'}</div>
+                        <div class="mt-1">
+                            <button data-action="doctor-approve" data-email="${d.email}" class="text-xs mr-2 px-2 py-1 rounded bg-emerald-500/10">Approve</button>
+                            <button data-action="doctor-reject" data-email="${d.email}" class="text-xs mr-2 px-2 py-1 rounded bg-red-600/10">Reject</button>
+                            <button data-action="doctor-block" data-email="${d.email}" class="text-xs px-2 py-1 rounded bg-red-600/20">Block</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            if (usersEl) {
+                const profiles = Object.values(getPatientProfiles());
+                usersEl.innerHTML = profiles.length === 0 ? '<div class="text-sm text-gray-400">No users registered.</div>' : profiles.map(p => `
+                    <div class="mb-2" data-user-email="${p.email}">
+                        <strong>${p.fullName}</strong>
+                        <div class="text-xs text-gray-500">${p.email || ''}</div>
+                        <div class="mt-1">
+                            <button data-action="user-block" data-email="${p.email}" class="text-xs mr-2 px-2 py-1 rounded bg-red-600/20">Block</button>
+                            <button data-action="user-unblock" data-email="${p.email}" class="text-xs mr-2 px-2 py-1 rounded bg-emerald-500/10">Unblock</button>
+                            <button data-action="user-delete" data-email="${p.email}" class="text-xs px-2 py-1 rounded bg-red-600/20">Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            if (requestsEl) {
+                const reqs = JSON.parse(localStorage.getItem('clinovaLicenseRequests') || '[]');
+                requestsEl.innerHTML = reqs.length === 0 ? '<div class="text-sm text-gray-400">No license requests.</div>' : reqs.map(r => `
+                    <div class="mb-2" data-req-id="${r.id}">
+                        <strong>${r.doctorEmail}</strong>
+                        <div class="text-xs text-gray-500">Requested by: ${r.hospitalEmail || 'Hospital'} • ${r.license || ''} • ${r.status}</div>
+                        <div class="mt-1">
+                            <button data-action="req-approve" data-id="${r.id}" class="text-xs mr-2 px-2 py-1 rounded bg-emerald-500/10">Approve</button>
+                            <button data-action="req-reject" data-id="${r.id}" class="text-xs px-2 py-1 rounded bg-red-600/10">Reject</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        };
+
+        const attachAdminHandlers = () => {
+            const adminBtn = document.getElementById('adminBtn');
+            const adminModal = document.getElementById('adminModalOverlay');
+            const closeAdmin = document.getElementById('closeAdminModal');
+            const addHospitalBtn = document.getElementById('addHospitalBtn');
+            const addDoctorBtn = document.getElementById('addDoctorBtn');
+
+            adminBtn?.addEventListener('click', () => {
+                if (adminModal) adminModal.classList.remove('hidden');
+                populateAdminLists();
+            });
+            closeAdmin?.addEventListener('click', () => adminModal?.classList.add('hidden'));
+
+            addHospitalBtn?.addEventListener('click', () => {
+                const name = (document.getElementById('adminHospitalName').value || '').trim();
+                const email = (document.getElementById('adminHospitalEmail').value || '').trim();
+                const key = (document.getElementById('adminHospitalKey').value || '').trim();
+                const lat = (document.getElementById('adminHospitalLat').value || '').trim();
+                const lng = (document.getElementById('adminHospitalLng').value || '').trim();
+                const address = (document.getElementById('adminHospitalAddress').value || '').trim();
+                if (!name) { showRoleActionMessage('Hospital name is required.', false); return; }
+                addRegisteredHospital({ name, email, key, lat, lng, address });
+                showRoleActionMessage(`Added hospital ${name}`, true);
+                populateAdminLists();
+            });
+
+            addDoctorBtn?.addEventListener('click', () => {
+                const name = (document.getElementById('adminDoctorName').value || '').trim();
+                const email = (document.getElementById('adminDoctorEmail').value || '').trim();
+                const license = (document.getElementById('adminDoctorLicense').value || '').trim();
+                const key = (document.getElementById('adminDoctorKey').value || '').trim();
+                if (!name || !email) { showRoleActionMessage('Doctor name and email are required.', false); return; }
+                addRegisteredDoctor({ name, email, license, key });
+                showRoleActionMessage(`Added doctor ${name}`, true);
+                populateAdminLists();
+            });
+
+            // delegated actions for lists
+            document.getElementById('registeredHospitalsList')?.addEventListener('click', (e) => {
+                const action = e.target?.dataset?.action;
+                const email = e.target?.dataset?.email;
+                if (!action || !email) return;
+                if (action === 'hospital-delete') {
+                    const hs = getRegisteredHospitals().filter(h => h.email !== email);
+                    saveRegisteredHospitals(hs);
+                    showRoleActionMessage('Hospital deleted.', true);
+                    populateAdminLists();
+                }
+                if (action === 'hospital-block') {
+                    const hs = getRegisteredHospitals();
+                    const target = hs.find(h => h.email === email);
+                    if (target) { target.blocked = true; saveRegisteredHospitals(hs); populateAdminLists(); showRoleActionMessage('Hospital blocked.', true); }
+                }
+            });
+
+            document.getElementById('registeredDoctorsList')?.addEventListener('click', (e) => {
+                const action = e.target?.dataset?.action;
+                const email = e.target?.dataset?.email;
+                if (!action || !email) return;
+                if (action === 'doctor-approve') {
+                    const docs = getRegisteredDoctors();
+                    const doc = docs.find(d => d.email === email);
+                    if (doc) { doc.licenseApproved = true; saveRegisteredDoctors(docs); populateAdminLists(); showRoleActionMessage('Doctor license approved.', true); }
+                }
+                if (action === 'doctor-reject') {
+                    const docs = getRegisteredDoctors();
+                    const doc = docs.find(d => d.email === email);
+                    if (doc) { doc.licenseApproved = false; saveRegisteredDoctors(docs); populateAdminLists(); showRoleActionMessage('Doctor license rejected.', true); }
+                }
+                if (action === 'doctor-block') {
+                    const docs = getRegisteredDoctors();
+                    const doc = docs.find(d => d.email === email);
+                    if (doc) { doc.blocked = true; saveRegisteredDoctors(docs); populateAdminLists(); showRoleActionMessage('Doctor blocked.', true); }
+                }
+            });
+
+            document.getElementById('registeredUsersList')?.addEventListener('click', (e) => {
+                const action = e.target?.dataset?.action;
+                const email = e.target?.dataset?.email;
+                if (!action || !email) return;
+                if (action === 'user-delete') {
+                    const profiles = getPatientProfiles();
+                    delete profiles[email];
+                    savePatientProfiles(profiles);
+                    populateAdminLists();
+                    showRoleActionMessage('User deleted.', true);
+                }
+                if (action === 'user-block') {
+                    const profiles = getPatientProfiles();
+                    if (profiles[email]) { profiles[email].blocked = true; savePatientProfiles(profiles); populateAdminLists(); showRoleActionMessage('User blocked.', true); }
+                }
+                if (action === 'user-unblock') {
+                    const profiles = getPatientProfiles();
+                    if (profiles[email]) { profiles[email].blocked = false; savePatientProfiles(profiles); populateAdminLists(); showRoleActionMessage('User unblocked.', true); }
+                }
+            });
+
+            document.getElementById('licenseRequestsList')?.addEventListener('click', (e) => {
+                const action = e.target?.dataset?.action;
+                const id = e.target?.dataset?.id;
+                if (!action || !id) return;
+                const reqs = JSON.parse(localStorage.getItem('clinovaLicenseRequests') || '[]');
+                const req = reqs.find(r => r.id === id);
+                if (!req) return;
+                if (action === 'req-approve') {
+                    req.status = 'APPROVED';
+                    // mark doctor as approved
+                    const docs = getRegisteredDoctors();
+                    const doc = docs.find(d => d.email === req.doctorEmail);
+                    if (doc) { doc.licenseApproved = true; saveRegisteredDoctors(docs); }
+                    localStorage.setItem('clinovaLicenseRequests', JSON.stringify(reqs));
+                    populateAdminLists();
+                    showRoleActionMessage('License request approved.', true);
+                }
+                if (action === 'req-reject') {
+                    req.status = 'REJECTED';
+                    localStorage.setItem('clinovaLicenseRequests', JSON.stringify(reqs));
+                    populateAdminLists();
+                    showRoleActionMessage('License request rejected.', false);
+                }
+            });
+        };
+
+        const makeSOSModeHtml = () => {
+            const signedInEmail = localStorage.getItem('clinovaAuthUser') || '';
+            const selectedHospital = getSelectedHospital();
+            const profile = getStoredPatientProfile(signedInEmail);
+            const hospitalOptions = getRegisteredHospitals().length ? getRegisteredHospitals().map(h => h.name) : [
+                'Kericho Town Emergency Hospital',
+                'Westside General Hospital',
+                'City Central Hospital',
+                'Northside Medical Center'
+            ];
+            return `
+                <div class="grid gap-6 lg:grid-cols-2">
+                    <div class="rounded-3xl border border-red-500/10 bg-gray-900/80 p-6 space-y-4">
+                        <div class="text-sm text-gray-400 mb-4">Choose the hospital that should receive your SOS alert.</div>
+                        <label class="text-xs text-gray-500 uppercase tracking-wider">Hospital destination</label>
+                        <select id="sosHospitalSelect" class="w-full rounded-2xl border border-gray-700 bg-gray-950/80 px-4 py-3 text-white outline-none focus:border-clinova-400">
+                            ${hospitalOptions.map((hospital) => `<option value="${hospital}" ${hospital === selectedHospital ? 'selected' : ''}>${hospital}</option>`).join('')}
+                        </select>
+                        <div class="rounded-2xl bg-red-950/50 p-4 space-y-3">
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="user" class="w-5 h-5 text-red-400"></i>
+                                <div class="text-sm text-gray-300">Patient: ${profile.fullName}</div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="mail" class="w-5 h-5 text-red-400"></i>
+                                <div class="text-sm text-gray-300">${signedInEmail}</div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="alert-triangle" class="w-5 h-5 text-red-400"></i>
+                                <div class="text-sm text-gray-300">Condition: ${profile.conditions}</div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="phone" class="w-5 h-5 text-red-400"></i>
+                                <div class="text-sm text-gray-300">Emergency contacts: ${profile.emergencyContacts}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rounded-3xl border border-red-500/10 bg-gray-900/80 p-6 flex flex-col justify-center items-center text-center space-y-4">
+                        <div class="w-32 h-32 rounded-full bg-red-500 sos-pulse flex items-center justify-center cursor-pointer hover:bg-red-600 transition-colors" id="sosEmergencyBtn">
+                            <i data-lucide="alert-circle" class="w-16 h-16 text-white"></i>
+                        </div>
+                        <div class="text-sm font-semibold text-white">ACTIVATE EMERGENCY</div>
+                        <div class="text-xs text-gray-400">Click the button to send your SOS alert from Kabiang to the chosen hospital in Kericho.</div>
+                    </div>
+                </div>
+                <div id="sosEmergencyResult" class="hidden mt-6 rounded-3xl border border-green-500/10 bg-gray-900/80 p-6 space-y-4">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i data-lucide="check-circle" class="w-6 h-6 text-green-400"></i>
+                        <div class="text-sm font-semibold text-green-400">Emergency Alert Activated</div>
+                    </div>
+                    <div id="sosEmergencyDetails" class="space-y-3 text-sm text-gray-300"></div>
+                </div>
+            `;
+        };
+
+        const handlePatientFeature = (action) => {
+            if (action === 'Hospital Finder') {
+                buildPatientFeatureContent('Nearby Hospital Search', 'Find available hospitals and select the one you want to attend.', makeHospitalFinderHtml());
+                attachPatientAdmissionHandlers();
+                return;
+            }
+            if (action === 'Get Admitted') {
+                buildPatientFeatureContent('Admission QR Code', 'Generate a QR code for reception to scan at your selected hospital.', makePatientAdmissionQrHtml());
+                return;
+            }
+            if (action === 'SOS Mode') {
+                const signedInEmail = localStorage.getItem('clinovaAuthUser');
+                if (!signedInEmail) {
+                    showRoleActionMessage('You must be signed in as a patient to use SOS Mode.', false);
+                    return;
+                }
+                buildPatientFeatureContent('Emergency SOS Mode - Activate', 'Click the button below to trigger an emergency alert to your chosen hospital. Your location will be sent and emergency routing will activate.', makeSOSModeHtml());
+                attachSOSEmergencyHandlers();
+                return;
+            }
+            showRoleActionMessage(`Feature ${action} is not yet implemented for patients.`, false);
+        };
+
+        const handleFeatureClick = (action) => {
+            const role = getCurrentRole();
+            if (!role) {
+                openLoginModal('Patient');
+                showRoleActionMessage('Please sign in first to access this feature.', false);
+                return;
+            }
+            if (!permittedActions[role]?.includes(action)) {
+                const owner = getFeatureOwner(action);
+                showRoleActionMessage(`Access denied. ${action} is reserved for ${owner}.`, false);
+                return;
+            }
+            showRoleActionMessage(`${role} access granted: ${action} is now active.`, true);
+            if (role === 'Patient') {
+                handlePatientFeature(action);
+                return;
+            }
+            if (role === 'Hospital') {
+                handleHospitalFeature(action);
+                return;
+            }
+        };
+
+        const handleLogin = () => {
+            const role = loginRole.value;
+            const email = loginEmail.value.trim();
+            const password = loginPassword.value;
+            const extra = loginExtra.value.trim();
+            const key = loginKey.value.trim();
+            const config = authMap[role];
+
+            if (!email || !password) {
+                loginError.classList.remove('hidden');
+                loginError.textContent = 'Email and password are required.';
+                return;
+            }
+            if (!config.validate({ email, password, extra, key })) {
+                loginError.classList.remove('hidden');
+                loginError.textContent = 'Login failed. Check your credentials and try again.';
+                return;
+            }
+
+            saveAuth(role, email, config.token);
+            setDashboardVisibility(role);
+            showLoginSuccess(`Access granted. Authenticated as ${role}. Your secure session is active on this homepage.`);
+            showRoleActionMessage(`Signed in as ${role}. Showing the ${role} dashboard only.`, true);
+            // show only the corresponding role card in the top roles grid
+            try {
+                const showPatient = role === 'Patient';
+                const showDoctor = role === 'Doctor';
+                const showHospital = role === 'Hospital';
+                const showEmergency = false; // never show Emergency as a role card
+                document.getElementById('rolePatient')?.classList.toggle('hidden', !showPatient);
+                document.getElementById('roleDoctor')?.classList.toggle('hidden', !showDoctor);
+                document.getElementById('roleHospital')?.classList.toggle('hidden', !showHospital);
+                document.getElementById('roleEmergency')?.classList.toggle('hidden', !showEmergency);
+            } catch (e) {
+                console.warn('Role card toggle failed', e);
+            }
+        };
+
+        loginRole.addEventListener('change', updateLoginFields);
+
+        [desktopSignInBtn, mobileSignInBtn].forEach((button) => {
+            button?.addEventListener('click', () => openLoginModal('Patient'));
+        });
+
+        [desktopAccessBtn, mobileAccessBtn, launchDashboardBtn].forEach((button) => {
+            button?.addEventListener('click', () => openLoginModal('Patient'));
+        });
+
+        [closeLoginModal, loginAbort].forEach((button) => {
+            button?.addEventListener('click', closeLogin);
+        });
+
+        loginSubmit.addEventListener('click', handleLogin);
+
+        document.querySelectorAll('.role-feature-btn').forEach((button) => {
+            button.addEventListener('click', () => {
+                handleFeatureClick(button.dataset.action);
+            });
+        });
+
+        patientProfileCard?.addEventListener('click', () => {
+            const role = getCurrentRole();
+            const signedInEmail = localStorage.getItem('clinovaAuthUser');
+            if (!role) {
+                openLoginModal('Patient');
+                showRoleActionMessage('Please sign in first to access the Health Profile.', false);
+                return;
+            }
+
+            if (role === 'Patient') {
+                if (!signedInEmail) {
+                    showRoleActionMessage('Your signed-in patient email is missing. Please sign in again.', false);
+                    return;
+                }
+                downloadPatientProfilePDF(signedInEmail);
+                return;
+            }
+
+            if (role === 'Doctor') {
+                openProfileEditorForEmail(editPatientEmail.value.trim());
+                return;
+            }
+
+            showRoleActionMessage('Health Profile access is reserved for signed-in patients and doctors.', false);
+        });
+
+        loadPatientProfile?.addEventListener('click', (event) => {
+            event.preventDefault();
+            openProfileEditorForEmail(editPatientEmail.value.trim());
+        });
+
+        savePatientProfileButton?.addEventListener('click', (event) => {
+            event.preventDefault();
+            savePatientProfileFromEditor();
+        });
+
+        closeProfileEditor?.addEventListener('click', () => {
+            profileEditorOverlay?.classList.add('hidden');
+        });
+
+        profileEditorOverlay?.addEventListener('click', (event) => {
+            if (event.target === profileEditorOverlay) {
+                profileEditorOverlay.classList.add('hidden');
+            }
+        });
+
+        loginModalOverlay.addEventListener('click', (event) => {
+            if (event.target === loginModalOverlay) {
+                closeLogin();
+            }
+        });
+
+        initializeDashboardView();
+        attachAdminHandlers();
+
+        const refreshEmergencyFeedIfOpen = () => {
+            if (getCurrentRole() !== 'Hospital') return;
+            if (!hospitalFeatureTitle || hospitalFeatureTitle.textContent !== 'Emergency Feed') return;
+            buildHospitalFeatureContent('Emergency Feed', 'Incoming patients with predicted conditions and ETA', makeEmergencyFeedHtml());
+            attachEmergencyFeedHandlers();
+        };
+
+        const handleStorageUpdate = (event) => {
+            if (event.key !== 'clinovaEmergencyNotifications') return;
+            if (getCurrentRole() !== 'Hospital') return;
+            playEmergencyAlarm();
+            showRoleActionMessage('New emergency alert received for your hospital. Open Emergency Feed to review and route.', true);
+            refreshEmergencyFeedIfOpen();
+        };
+
+        window.addEventListener('storage', handleStorageUpdate);
+
+        // SOS button demo
+        const sosBtn = document.getElementById('sosBtn');
+        const sosOutput = document.getElementById('sosOutput');
+        let sosActive = false;
+
+        const openGoogleMapsLocation = (latitude, longitude) => {
+            const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+            window.open(mapsUrl, '_blank');
+            return mapsUrl;
+        };
+
+        const updateSosStep = (step, title, subtitle) => {
+            if (!step) return;
+            const content = step.querySelector(':scope > div:nth-child(2)');
+            if (!content) return;
+            const titleNode = content.querySelector('.text-xs.font-semibold');
+            const subtitleNode = content.querySelector('.text-xs.text-gray-500');
+            if (titleNode) titleNode.textContent = title;
+            if (subtitleNode) subtitleNode.textContent = subtitle;
+        };
+
+        const sendEmergencyAlarm = (position) => {
+            const latitude = position.coords.latitude.toFixed(6);
+            const longitude = position.coords.longitude.toFixed(6);
+            const mapUrl = openGoogleMapsLocation(latitude, longitude);
+            showRoleActionMessage('Emergency alarm sent with location to first responders.', true);
+
+            const steps = sosOutput.querySelectorAll('.sos-step');
+            updateSosStep(0, 'Step 1 — Patient Location Detected', `Coordinates: ${latitude}, ${longitude}`);
+            updateSosStep(1, 'Step 2 — Alarm Alert Sent', 'Notifying emergency responders instantly.');
+            updateSosStep(2, 'Step 3 — Exact Location Shared', `Google Maps link opened for responders.`);
+            updateSosStep(3, 'Step 4 — Route Active', `Live navigation details available.`);
+            updateSosStep(4, 'Step 5 — Emergency Response Triggered', `Dedicated team alerted.`);
+
+            const locationNote = document.createElement('div');
+            locationNote.className = 'text-xs text-gray-400';
+            locationNote.textContent = `Map URL: ${mapUrl}`;
+            const lastStep = sosOutput.querySelector('.sos-step:last-child > div');
+            lastStep?.appendChild(locationNote);
+        };
+
+        const handleSosError = (error) => {
+            const steps = sosOutput.querySelectorAll('.sos-step');
+            updateSosStep(0, 'Step 1 — Location Access Failed', 'Unable to retrieve GPS coordinates.');
+            updateSosStep(1, 'Step 2 — Emergency Alarm Partial', 'Alarm sent without exact coordinates.');
+            updateSosStep(2, 'Step 3 — Location Needed', 'Please allow location access and retry.');
+            updateSosStep(3, 'Step 4 — Fallback Notification', 'Emergency team alerted via last known info.');
+            updateSosStep(4, 'Step 5 — Response Pending', `Error: ${error.message || 'Location unavailable'}`);
+            showRoleActionMessage('Location access denied or unavailable. Emergency alarm sent with best available data.', false);
+        };
+
+        sosBtn.addEventListener('click', () => {
+            if (sosActive) return;
+            const role = getCurrentRole();
+            if (role && role !== 'Patient') {
+                openLoginModal('Patient');
+                showRoleActionMessage('Emergency SOS requires Patient sign in to access location.', false);
+                return;
+            }
+
+            sosActive = true;
+            sosBtn.classList.remove('sos-pulse');
+            sosBtn.classList.add('bg-red-600');
+            sosOutput.classList.remove('hidden');
+
+            const steps = sosOutput.querySelectorAll('.sos-step');
+            steps.forEach((step) => {
+                step.style.opacity = '0';
+                step.style.transform = 'translateX(-20px)';
+            });
+
+            steps.forEach((step, index) => {
+                setTimeout(() => {
+                    step.style.transition = 'all 0.5s ease-out';
+                    step.style.opacity = '1';
+                    step.style.transform = 'translateX(0)';
+                }, index * 500 + 300);
+            });
+
+            const requestLocation = () => {
+                if (!navigator.geolocation) {
+                    handleSosError({ message: 'Geolocation not supported.' });
+                    return;
+                }
+
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        sendEmergencyAlarm(position);
+                    },
+                    (error) => {
+                        handleSosError(error);
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
+            };
+
+            updateSosStep(0, 'Step 1 — Accessing Location', 'Requesting patient GPS coordinates from device.');
+            updateSosStep(1, 'Step 2 — Preparing Alarm', 'Building emergency notification payload.');
+            updateSosStep(2, 'Step 3 — Validating Response', 'Confirming responder pathway.');
+            updateSosStep(3, 'Step 4 — Engaging Network', 'Dispatch pipeline ready.');
+            updateSosStep(4, 'Step 5 — Sending Signal', 'Waiting for GPS confirmation...');
+
+            requestLocation();
+
+            setTimeout(() => {
+                sosActive = false;
+                sosBtn.classList.add('sos-pulse');
+                sosBtn.classList.remove('bg-red-600');
+            }, 10000);
+        });
+
+        // Scroll reveal animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal-section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Severity bars animation
+        const severityObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const bars = entry.target.querySelectorAll('.severity-bar');
+                    bars.forEach(bar => {
+                        const width = bar.style.width;
+                        bar.style.width = '0%';
+                        setTimeout(() => {
+                            bar.style.width = width;
+                        }, 200);
+                    });
+                }
+            });
+        }, { threshold: 0.3 });
+
+        document.querySelectorAll('.glass').forEach(card => {
+            severityObserver.observe(card);
+        });
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

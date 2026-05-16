@@ -1,0 +1,338 @@
+:root {
+  color-scheme: dark;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #08121c;
+  color: #edf2f7;
+  line-height: 1.5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(circle at top, rgba(86, 159, 255, 0.12), transparent 20%),
+    linear-gradient(180deg, #07101d 0%, #020710 100%);
+}
+
+button,
+textarea {
+  font: inherit;
+}
+
+button {
+  border: none;
+  border-radius: 999px;
+  padding: 0.85rem 1.2rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button.primary {
+  background: #2d8ff7;
+  color: white;
+}
+
+button.danger {
+  background: #f44336;
+  color: white;
+}
+
+body,
+textarea,
+button,
+input,
+select {
+  color: inherit;
+}
+
+textarea {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.05);
+  padding: 1rem;
+  resize: vertical;
+  color: #f8fafc;
+}
+
+.app-shell {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.hero-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.4rem 1.6rem;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 24px;
+  background: rgba(7, 17, 32, 0.95);
+}
+
+.hero-bar h1 {
+  margin: 0 0 0.25rem;
+}
+
+.hero-bar p {
+  margin: 0;
+  color: #8aa4bb;
+}
+
+.tab-nav {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.tab {
+  background: rgba(255,255,255,0.05);
+  color: #a6b5cc;
+}
+
+.tab.active {
+  background: #1f69e0;
+  color: white;
+}
+
+.content-panel {
+  margin-top: 1.5rem;
+}
+
+.overview-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 22px;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.card strong {
+  color: #becbdf;
+}
+
+.card span {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.dashboard-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+.panel {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 24px;
+  padding: 1.4rem;
+}
+
+.panel.full-width {
+  grid-column: 1 / -1;
+}
+
+.panel h2 {
+  margin-top: 0;
+}
+
+.profile-card,
+.case-card,
+.hospital-card,
+.event-card,
+.info-box,
+.status-box {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 18px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.card-title {
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.button-row,
+.button-row.wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.case-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.case-summary {
+  width: 100%;
+  text-align: left;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 1rem;
+  border-radius: 18px;
+  color: inherit;
+}
+
+.case-summary.selected {
+  border-color: #2d8ff7;
+  background: rgba(45,143,247,0.12);
+}
+
+.info-box {
+  background: rgba(48, 67, 96, 0.92);
+  border-color: rgba(72, 98, 136, 0.9);
+}
+
+.status-banner,
+.status-box {
+  margin: 1rem 0;
+  padding: 1rem;
+  border-radius: 18px;
+  background: rgba(34, 46, 62, 0.92);
+}
+
+.status-banner.error {
+  background: #581c23;
+}
+
+.grid-split {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.data-table th,
+.data-table td {
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 0.85rem;
+  text-align: left;
+}
+
+  .auth-chip {
+    margin-top: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 999px;
+    padding: 0.65rem 1rem;
+    color: #cbd5e1;
+    font-size: 0.9rem;
+  }
+
+  .auth-chip.guest {
+    background: rgba(244, 67, 54, 0.08);
+    border-color: rgba(244, 67, 54, 0.2);
+    color: #f8d3d1;
+  }
+
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(3, 10, 24, 0.85);
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    z-index: 1000;
+  }
+
+  .login-modal {
+    width: min(650px, 100%);
+    background: rgba(10, 20, 34, 0.98);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 28px;
+    padding: 2rem;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+  }
+
+  .login-modal h2 {
+    margin-top: 0;
+    margin-bottom: 0.6rem;
+  }
+
+  .modal-copy,
+  .login-hint {
+    color: #9fb5d4;
+    margin-bottom: 1rem;
+  }
+
+  .form-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    margin-bottom: 1.25rem;
+  }
+
+  .form-grid label {
+    display: grid;
+    gap: 0.5rem;
+    color: #cbd5e1;
+    font-size: 0.95rem;
+  }
+
+  .form-grid input,
+  .form-grid select {
+    width: 100%;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+    padding: 0.85rem 1rem;
+    color: inherit;
+  }
+
+  .form-grid input:focus,
+  .form-grid select:focus {
+    outline: none;
+    border-color: #2d8ff7;
+    box-shadow: 0 0 0 3px rgba(45, 143, 247, 0.18);
+  }
+
+  .login-modal .button-row {
+    justify-content: flex-end;
+  }
+
+  .login-modal .button-row button {
+    border-radius: 999px;
+  }
+
+  .login-modal .field-note {
+    color: #7c98b5;
+    font-size: 0.9rem;
+  }
