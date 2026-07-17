@@ -9,3 +9,5 @@ yarn-error.log*
 coverage/
 *.local
 *.log
+
+/generated/prisma
